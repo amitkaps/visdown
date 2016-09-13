@@ -1,0 +1,86 @@
+brand,name,price,type,kmplh,bhp,fuel,value
+Honda,Amaze,519,Sedan,18,87, Petrol, 3.47 
+Fiat,Avventura,629,SUV,14.4,89, Petrol, 2.29 
+Chevrolet,Beat,421,Hatchback,18.6,79, Petrol, 4.42 
+Mahindra,Bolero,731,SUV,16,63, Diesel, 2.19 
+Honda,Brio,421,Hatchback,19.4,87, Petrol, 4.61 
+Ford,Classic,506,Sedan,14.1,100, Petrol, 2.79 
+Volkswagen,Cross Polo,699,Hatchback,16.5,74, Petrol, 2.36 
+Skoda,D Rapid,851,Sedan,20.5,77, Diesel, 2.41 
+Nissan,Datsun GO,312,Hatchback,20.6,67, Petrol, 6.60 
+Renault,Duster,830,SUV,13.1,104, Petrol, 1.58 
+Ford,EcoSport,675,SUV,15.8,110, Petrol, 2.34 
+Chevrolet,Enjoy,612,MPV,13.7,103, Petrol, 2.24 
+Hyundai,EON,302,Hatchback,21.1,55, Petrol, 6.99 
+Toyota,Etios,603,Sedan,16.8,89, Petrol, 2.79 
+Toyota,Etios Cross,623,SUV,17.7,79, Petrol, 2.84 
+Toyota,Etios Liva,500,Hatchback,17.7,79, Petrol, 3.54 
+Toyota,Etios Xclusive,598,Sedan,16.8,88, Petrol, 2.81 
+Nissan,Evalia,850,MPV,19.3,85, Diesel, 2.27 
+Skoda,Fabia,503,Hatchback,16.4,75, Petrol, 3.26 
+Ford,Fiesta,850,Sedan,23.5,90, Diesel, 2.76 
+Ford,Figo 2014,414,Hatchback,15.3,70, Petrol, 3.70 
+Honda,Freed,750,MPV,16.2,116, Petrol, 2.16 
+Datsun,GO Plus,380,MPV,20.6,67, Petrol, 5.42 
+Hyundai,Grand i10,463,Hatchback,18.9,82, Petrol, 4.08 
+Hyundai,i10,418,Hatchback,19.8,68, Petrol, 4.74 
+Hyundai,i20,523,Hatchback,18.6,82, Petrol, 3.56 
+Hyundai,i20 Active,639,Hatchback,17.9,82, Petrol, 2.80 
+Tata,Indica eV2,414,Hatchback,18,53, Diesel, 4.35 
+Tata,Indica Vista,478,Hatchback,19.1,70, Diesel, 4.00 
+Tata,Indigo eCS,499,Sedan,14,65, Petrol, 2.81 
+Honda,Jazz,756,Hatchback,16,91, Petrol, 2.12 
+Ashok,Leyland Stile,750,MPV,20.7,75, Diesel, 2.76 
+Fiat,Linea Classic,612,Sedan,14.9,89, Petrol, 2.43 
+Renault,Lodgy,819,MPV,21,84, Diesel, 2.56 
+Tata,Manza,616,Sedan,21.2,88, Diesel, 3.44 
+Nissan,Micra,413,Hatchback,19.5,67, Petrol, 4.72 
+Honda,Mobilio,675,MPV,17.3,117, Petrol, 2.56 
+San,Motors Storm,595,Sedan,16,59, Petrol, 2.69 
+Tata,Movus,698,MUV,15.2,118, Diesel, 2.18 
+Tata,Nano,199,Hatchback,23.9,38, Petrol, 12.01 
+Fiat,New Linea,700,Sedan,15.7,112, Petrol, 2.24 
+Force,One,927,SUV,17,81, Diesel, 1.83 
+Volkswagen,Polo,535,Hatchback,16.5,74, Petrol, 3.08 
+Volkswagen,Polo GT,800,Hatchback,19.7,104, Diesel, 2.46 
+Renault,Pulse,446,Hatchback,18,74, Petrol, 4.04 
+Fiat,Punto Evo,499,Hatchback,15.8,67, Petrol, 3.17 
+Mahindra,Quanto,642,SUV,17.1,100, Diesel, 2.66 
+Skoda,Rapid,756,Sedan,15,104, Petrol, 1.98 
+Tata,Safari DICOR,826,SUV,13.9,140, Diesel, 1.68 
+Tata,Safari Storme,999,SUV,14.1,138, Diesel, 1.41 
+Chevrolet,Sail,551,Sedan,18.2,82, Petrol, 3.30 
+Chevrolet,Sail Hatchback,468,Hatchback,18.2,82, Petrol, 3.89 
+Renault,Scala,724,Sedan,16.9,98, Petrol, 2.33 
+Mahindra,Scorpio,869,SUV,14,75, Diesel, 1.61 
+Chevrolet,Spark,345,Hatchback,16.2,62, Petrol, 4.70 
+Tata,Sumo Gold,623,SUV,14.7,69, Diesel, 2.36 
+Tata,Sumo Grande,762,MUV,13.6,118, Diesel, 1.78 
+Nissan,Sunny,699,Sedan,16.9,98, Petrol, 2.42 
+Maruti,Suzuki Alto,315,Hatchback,24.1,67, Petrol, 7.65 
+Maruti,Suzuki Alto 800,248,Hatchback,22.7,47, Petrol, 9.15 
+Maruti,Suzuki Celerio,392,Hatchback,23.1,67, Petrol, 5.89 
+Maruti,Suzuki Ciaz,725,Sedan,20.7,91, Petrol, 2.86 
+Maruti,Suzuki EECO,311,MUV,15.1,73, Petrol, 4.86 
+Maruti,Suzuki Ertiga,603,MUV,16,94, Petrol, 2.65 
+Maruti,Suzuki Estilo,338,Hatchback,19,67, Petrol, 5.62 
+Maruti,Suzuki Gypsy King,600,SUV,12,80, Petrol, 2.00 
+Maruti,Suzuki Omni,252,MUV,14.1,33, Petrol, 5.60 
+Maruti,Suzuki Ritz,442,Hatchback,18.5,86, Petrol, 4.19 
+Maruti,Suzuki Swift,462,Hatchback,20.4,83, Petrol, 4.42 
+Maruti,Suzuki Swift DZire,508,Sedan,19.1,86, Petrol, 3.76 
+Maruti,Suzuki SX4,715,Sedan,16.5,103, Petrol, 2.31 
+Maruti,Suzuki Wagon-R,363,Hatchback,20.5,67, Petrol, 5.65 
+Maruti,Suzuki WagonR Stingray,417,Hatchback,20.5,68, Petrol, 4.92 
+Chevrolet,Tavera,727,MUV,13.6,72, Diesel, 1.87 
+Nissan,Terrano,963,SUV,20.5,84, Diesel, 2.13 
+Mahindra,Thar,476,SUV,13,63, Diesel, 2.73 
+Volkswagen,Up,360,Hatchback,21,74, Petrol, 5.83 
+Volkswagen,Vento,785,Sedan,16.1,104, Petrol, 2.05 
+Tata,Venture,457,MUV,15.4,71, Diesel, 3.37 
+Mahindra,Verito,673,Sedan,21.1,65, Diesel, 3.14 
+Mahindra,Verito Vibe,601,Hatchback,20.8,64, Diesel, 3.46 
+Hyundai,Verna,774,Sedan,17.4,106, Petrol, 2.25 
+Hyundai,Xcent,496,Sedan,19.1,82, Petrol, 3.85 
+Mahindra,Xylo,808,SUV,13.9,95, Diesel, 1.72 
+Tata,Zest,481,Sedan,17.6,89, Petrol, 3.66 

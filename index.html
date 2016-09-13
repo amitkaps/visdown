@@ -1,0 +1,68 @@
+
+<!doctype html>
+<html id="visualisation-markdown" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Visulisation Markdown</title>
+        <meta name="description" content="Create Simple Visualisation Charts with Markdown">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="/lib/d3.v3.min.js" charset="utf-8"></script>
+        <script src="/lib/vega.min.js" charset="utf-8"></script>
+        <script src="/lib/vega-lite.min.js" charset="utf-8"></script>
+        <script src="/lib/vega-embed.js" charset="utf-8"></script>
+        <script src="/lib/marked.js" charset="utf-8"></script>
+        <script src="/lib/yaml.js" charset="utf-8"></script>
+        <script src="visdown.js" charset="utf-8"></script>
+
+        <link rel="stylesheet" href="visdown.css">
+
+    </head>
+    <body>
+      <main id="editor">
+        <textarea id="input">
+# Visualisation markdown
+Make visualisation using simple markdown
+
+---
+
+```vis
+data:
+  url: "data/cars.csv"
+mark: point
+encoding:
+  x:
+    type: quantitative
+    field: kmplh
+  y:
+    type: quantitative
+    field: price
+```
+Hello this is a test
+
+```js
+a = 4
+```
+        </textarea>
+        <section id="output"></section>
+      </main>
+
+      <footer>
+        <div id="yaml">
+data:
+  url: "data/cars.csv"
+mark: point
+encoding:
+  x:
+    type: quantitative
+    field: kmplh
+  y:
+    type: quantitative
+    field: price
+        </div>
+
+        <div id="vis"> </div>
+    </footer>
+
+    </body>
+</html>
