@@ -1,0 +1,92 @@
+window.onload = function () {
+
+	function rendersvg (svg){
+		var htmlChart = "<div id='#vis-embed'>" + svg+ "</div>";
+		//return htmlChart;
+		renderhtmlChart(htmlChart);
+	}
+
+	function createVis (yaml){
+		var jsonVis = YAML.parse(yaml);
+		var vgSpec = vl.compile(jsonVis).spec;
+		var vis = vg.parse.spec(vgSpec, function(chart) {
+		  view = chart({ renderer: "svg" }).update();
+			svg = view.svg();
+			//console.log(svg);
+			//return svg;
+		});
+		//return vis;
+	}
+
+	//var yamlString = document.querySelector("#yaml").innerHTML;
+	//console.log(yamlString);
+	//createVis(yamlString);
+	//console.log(vis);
+
+
+//	jsonVis1 = YAML.parse(yamlString.innerHTML);
+//	vgSpec1 = vl.compile(jsonVis1).spec;
+//  var embedSpec = {mode: "vega-lite", spec: jsonVis1, renderer: "svg" };
+//  vg.embed("#vis", embedSpec, function(error, result) {});
+
+
+	// Set option for block level renderer in marked.js
+	// Convert code (vis) into div in the html
+
+	var counter = 0;
+	var marked = window.marked;
+	var renderer = new marked.Renderer();
+
+	renderer.code = function (code, lang, escaped, visid) {
+		if (lang == "vis") {
+
+			var jsonVis = YAML.parse(code);
+			var vgSpec = vl.compile(jsonVis).spec;
+			var htmlChart;
+			var vis_embed;
+			//counter++;
+			//htmlChart = "<div id='vis-embed-" + counter +"'></div>";
+		  vg.parse.spec(vgSpec, function(chart) {
+		    view = chart({ renderer: "svg" }).update();
+		  	svg = view.svg();
+				el = "#vis-embed-" + visid;
+				console.log(document.querySelector(el));
+				vis_embed = document.querySelector(el);
+				vis_embed.innerHTML = svg;
+		  });
+			htmlChart = "<div id='vis-embed-" + visid +"'></div>";
+			console.log(htmlChart);
+			return htmlChart;
+		}
+			var result = marked.Renderer.prototype.code.call(this, code, lang, escaped);
+			return result;
+	};
+
+	// Convert to markdown
+	var input = document.querySelector("#input");
+	var output = document.querySelector("#output");
+	var previousMarkdownText;
+
+	var visdown = function () {
+		var markdownText = input.value;
+		previousMarkdownText = markdownText;
+		output.innerHTML = marked(markdownText, { renderer: renderer });
+		console.log("hello");
+	}
+
+	var didChangeOccur = function(){
+      if(previousMarkdownText != input.value){
+          return true;
+      }
+      return false;
+  };
+
+	setInterval(function(){
+		if(didChangeOccur()){
+			visdown();
+		}
+	}, 500);
+
+	input.addEventListener('input', visdown);
+
+}

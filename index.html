@@ -3,7 +3,7 @@
 <html id="visualisation-markdown" lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Visulisation Markdown</title>
+        <title>Visdown - Markdown for Visualisation</title>
         <meta name="description" content="Create Simple Visualisation Charts with Markdown">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -20,9 +20,9 @@
     </head>
     <body>
       <main id="editor">
-        <textarea id="input">
-# Visualisation markdown
-Make visualisation using simple markdown
+        <textarea id="input" oninput="visdown()">
+# Visdown
+Make visualisation using just markdown
 
 ---
 
@@ -41,7 +41,21 @@ encoding:
 Hello this is a test
 
 ```js
-a = 4
+a = 1 + 4;
+
+```
+
+```vis
+data:
+  url: "data/cars.csv"
+mark: point
+encoding:
+  x:
+    type: quantitative
+    field: bhp
+  y:
+    type: quantitative
+    field: price
 ```
         </textarea>
         <section id="output"></section>

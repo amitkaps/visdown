@@ -1,5 +1,21 @@
 window.onload = function () {
 
+	// Get the theme.json configuration for Vega
+	var theme;
+	var request = new XMLHttpRequest();
+	request.open('GET', 'theme.json', true);
+	request.onload = function() {
+	  if (request.status >= 200 && request.status < 400) {
+	    theme = JSON.parse(request.responseText);
+			console.log(theme);
+	  } else {
+			console.log("server error");
+	  }
+	};
+	request.onerror = function() {console.log("connection error")};
+	request.send();
+
+
 	// Start a new marked instance and renderer
 	var marked = window.marked;
 	var renderer = new marked.Renderer();
@@ -9,12 +25,21 @@ window.onload = function () {
 	renderer.code = function (code, lang, escaped) {
 		if (lang == "vis") {
 			var jsonVis = YAML.parse(code);
-			//var vgSpec = vl.compile(jsonVis).spec;
-			var embedSpec = {mode: "vega-lite", spec: jsonVis, renderer: "svg" };
+			var vgSpec = vl.compile(jsonVis).spec;
+			var htmlChart;
+			var el;
+			var vis_embed;
+		  vg.parse.spec(vgSpec, theme, function(chart) {
+				console.log("counter", counter);
+		    view = chart({ renderer: "svg" }).update();
+		  	svg = view.svg();
+				el = "#vis-embed";
+				vis_embed = document.querySelector(el);
+				console.log(vis_embed)
+				vis_embed.innerHTML = svg;
+		  });
 			counter++;
-			el = "#vis-" + counter;
-			vg.embed(el, embedSpec, function(error, result) {});
-			htmlChart = "<div id='vis-" + counter + "'></div>";
+			htmlChart = "<div id='vis-embed'></div>";
 			return htmlChart;
 		}
 		var result = marked.Renderer.prototype.code.call(this, code, lang, escaped);
