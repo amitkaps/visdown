@@ -1,16 +1,8 @@
-html, body {
+html, body, main {
   margin: 0;
   height: 100%;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   color: #333;
-}
-
-main {
-  height: 100%;
-}
-
-footer {
-  padding: 10px 20px;
 }
 
 textarea, section {
@@ -21,7 +13,11 @@ textarea, section {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  padding: 0 20px;
+  padding: 0 10px 0 20px;
+}
+
+section {
+  overflow: scroll;
 }
 
 textarea {
@@ -37,4 +33,10 @@ textarea {
 
 code {
   color: #f66;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 5px;
+    text-align: left;
 }
