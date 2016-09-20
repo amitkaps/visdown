@@ -24,11 +24,11 @@ window.onload = function () {
 	var input = document.querySelector("#input");
 	var output = document.querySelector("#output");
 
-	window.visdown-vega = function () {
-		console.log('visdown-vega');
+	window.visdownVega = function () {
+		console.log('visdownVega');
 		var markdownText = input.value;
 		output.innerHTML = marked(markdownText, { renderer: renderer });
 	}
-	visdown-vega()
+	visdownVega()
 
 }
