@@ -34,9 +34,3 @@ textarea {
 code {
   color: #f66;
 }
-
-th, td {
-    border-bottom: 1px solid #ddd;
-    padding: 5px;
-    text-align: left;
-}
