@@ -71,7 +71,7 @@ window.onload = function () {
 		var markdownText = input.value;
 		previousMarkdownText = markdownText;
 		output.innerHTML = marked(markdownText, { renderer: renderer });
-		console.log("hello");
+		console.log("Updated");
 	}
 
 	var didChangeOccur = function(){

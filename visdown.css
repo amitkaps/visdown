@@ -1,7 +1,9 @@
 html, body, main {
   margin: 0;
+  padding: 0;
   height: 100%;
   font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
   color: #333;
 }
 
@@ -13,11 +15,12 @@ textarea, section {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  padding: 0 10px 0 20px;
+  padding: 40px 10px 0 20px;
 }
 
 section {
   overflow: scroll;
+
 }
 
 textarea {
@@ -26,11 +29,35 @@ textarea {
   resize: none;
   outline: none;
   background-color: #f6f6f6;
-  font-size: 14px;
   font-family: 'Monaco', courier, monospace;
-  padding: 20px;
+  font-size: 14px;
+  padding-top: 55px;
 }
 
 code {
   color: #f66;
 }
+
+header {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-color: #000;
+  color: #AAA;
+  padding: 10px 20px;
+}
+
+header h1{font-size: 1.2em; margin: 0;}
+nav {position: absolute; top:2px; left:110px;  padding: 5px;}
+/* For the Drop Nav */
+nav ul {list-style: none;padding: 0px;margin: 0px;}
+nav ul li {display: block; position: relative; float: left; border: 1px solid #000}
+nav li ul {display: none;}
+nav ul li a {display: block; background: #000; padding: 5px 10px 5px 10px; text-decoration: none;
+         white-space: nowrap; color: #DDA155;}
+nav ul li a:hover {background: #333;}
+nav li:hover ul {display: block; position: absolute;}
+nav li:hover li {float: none;}
+nav li:hover a {background: #333;}
+nav li:hover li a:hover {background: #000;}
+nav #drop-nav li ul li {border-top: 0px;}
