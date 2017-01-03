@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vega/2.6.3/vega.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vega-lite/1.3.1/vega-lite.min.js"></script>
+<script src="http://vega.github.io/vega-editor/vendor/vega-embed.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/yamljs/0.2.8/yaml.min.js"></script>
+
+<script src="visdown.js"></script>
+
+<style>
+html, body {margin: 0; padding: 0; height: 100%;
+            max-width: 800px; padding: 20px 40px; font-size: 18px;}
+p {font-size: 20px;}
+textarea {display: none;}
+#vis-1 {float: right;}
+</style>
+
+<textarea id="visdown-input" oninput="visdown()">
+# Visdown
+Make visualisations using only markdown
+
+---
+
+Type text specification, get a chart!
+
+```vis
+data:
+  url: "cars.csv"
+mark: circle
+encoding:
+  x:
+    type: quantitative
+    field: kmpl
+    scale:
+     domain: [12,25]
+  y:
+    type: quantitative
+    field: price
+    scale:
+     domain: [100,900]
+  color:
+    type: nominal
+    field: type
+  size:
+    type: quantitative
+    field: bhp
+```
+
+<pre>
+```vis
+data:
+  url: "cars.csv"
+mark: circle
+encoding:
+  x:
+    type: quantitative
+    field: kmpl
+    scale:
+     domain: [12,25]
+  y:
+    type: quantitative
+    field: price
+    scale:
+     domain: [100,900]
+  color:
+    type: nominal
+    field: type
+  size:
+    type: quantitative
+    field: bhp
+```
+</pre>
+</textarea>
+<div id="visdown-output"></div>

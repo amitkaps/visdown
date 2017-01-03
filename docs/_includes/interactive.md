@@ -1,32 +1,4 @@
-
-<!doctype html>
-<html id="visdown-vega" lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Visdown - Markdown for Visualisation</title>
-        <meta name="description" content="Create Simple Visualisation Charts with Markdown">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <script src="/lib/d3.v3.min.js" charset="utf-8"></script>
-        <script src="/lib/vega.min.js" charset="utf-8"></script>
-        <script src="/lib/vega-lite.min.js" charset="utf-8"></script>
-        <script src="/lib/vega-embed.js" charset="utf-8"></script>
-        <script src="/lib/marked.js" charset="utf-8"></script>
-        <script src="/lib/yaml.js" charset="utf-8"></script>
-        <script src="visdown-vega.js" charset="utf-8"></script>
-
-        <link rel="stylesheet" href="visdown.css">
-
-    </head>
-    <body>
-      <main>
-        <textarea id="input" oninput="visdownVega()">
-# Visdown
-Make visualisations using only markdown
-
----
-
-Write visualisation using a simple declarative markup like you would write code. Just wrap it in fenced block (three backticks) and mark the language as 'vis'.
+# Using Vega
 
 Make complex interactive visualisations using vega (airports example)
 
@@ -222,20 +194,3 @@ marks:
       text:
         signal: title
 ```
-
-# Concept and Code
-Allows you to write json specification in simple yaml and use **marked** and **vega** to convert those specific code blocks in to svg.
-
-- yaml -> json (using [yaml.js](https://github.com/jeremyfa/yaml.js))
-- json -> vega -> svg (using [vega.js](https://vega.github.io/vega/))
-- markdown -> html (using [marked.js](https://github.com/chjj/marked))
-
-See the code at [http://github.com/amitkaps/visdown](http://github.com/amitkaps/visdown)
-
----
-Handcrafted by [Amit Kapoor](http://amitkaps.com)
-        </textarea>
-        <section id="output"></section>
-      </main>
-      </body>
-</html>

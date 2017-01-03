@@ -21,58 +21,13 @@ window.onload = function () {
 	};
 
 	// Convert from Markdown to HTML
-	var input = document.querySelector("#input");
-	var output = document.querySelector("#output");
-	var previousMarkdownText;
+	var input = document.querySelector("#visdown-input");
+	var output = document.querySelector("#visdown-output");
 
-	window.visdown2 = function () {
+	window.visdown = function () {
 		console.log('visdown');
-
-		// Get the example files
-		var mdfiles;
-		var request = new XMLHttpRequest();
-		request.open('GET', '/examples/intro.md', true);
-		request.onload = function() {
-			if (request.status >= 200 && request.status < 400) {
-				mdText = request.responseText;
-				console.log(mdText);
-				input.value = mdText
-				visdown()
-			} else {
-				console.log("Error loading examples");
-			}
-		};
-		request.onerror = function() {console.log("connection error")};
-		request.send();
-
-		// Update the output with
 		var markdownText = input.value;
 		output.innerHTML = marked(markdownText, { renderer: renderer });
-
 	}
-	//visdown()
-	console.log(input.value);
-
-	var visdown = function () {
-		var markdownText = input.value;
-		previousMarkdownText = markdownText;
-		output.innerHTML = marked(markdownText, { renderer: renderer });
-		console.log("Updated");
-	}
-
-	var didChangeOccur = function(){
-      if(previousMarkdownText != input.value){
-          return true;
-      }
-      return false;
-  };
-
-	setInterval(function(){
-		if(didChangeOccur()){
-			visdown();
-		}
-	}, 1000);
-
-	input.addEventListener('input', visdown);
-
+	visdown()
 }

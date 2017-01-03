@@ -47,8 +47,14 @@ header {
   padding: 10px 20px;
 }
 
-header h1{font-size: 1.2em; margin: 0;}
+table {
+  border-spacing: 0.7rem;
+}
+
+header h1 {font-size: 1.2em; margin: 0;}
 nav {position: absolute; top:2px; left:110px;  padding: 5px;}
+.icons {position: absolute; top:4px; right:60px; }
+.icon {display: inline-block; width: 1.6rem; height: 1.6rem; margin: 0.3rem;}
 /* For the Drop Nav */
 nav ul {list-style: none;padding: 0px;margin: 0px;}
 nav ul li {display: block; position: relative; float: left; border: 1px solid #000}

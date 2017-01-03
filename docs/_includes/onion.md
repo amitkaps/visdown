@@ -5,7 +5,7 @@ A very simple scatter plot.
 
 ```
 brand   | model  |  price |   kmpl | type      |   bhp  |
---------|--------|--------|--------|-----------|--------|
+:-------|:-------|-------:|-------:|:----------|-------:|
 Tata    | Nano   |    199 |   23.9 | Hatchback |    38  |
 Suzuki  | Alto800|    248 |   22.7 | Hatchback |    47  |
 Hyundai | EON    |    302 |   21.1 | Hatchback |    55  |

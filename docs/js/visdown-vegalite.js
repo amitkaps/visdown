@@ -21,8 +21,8 @@ window.onload = function () {
 	};
 
 	// Convert from Markdown to HTML
-	var input = document.querySelector("#input");
-	var output = document.querySelector("#output");
+	var input = document.querySelector("#visdown-input");
+	var output = document.querySelector("#visdown-output");
 
 	window.visdown = function () {
 		console.log('visdown');
