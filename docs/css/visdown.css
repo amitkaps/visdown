@@ -45,15 +45,19 @@ header {
   background-color: #000;
   color: #AAA;
   padding: 10px 20px;
+  z-index: 10;
 }
 
 table {
   border-spacing: 0.7rem;
 }
 
+h1 {font-size: 2rem;}
+h2 {font-size: 1.6rem;}
+
 header h1 {font-size: 1.2em; margin: 0;}
 nav {position: absolute; top:2px; left:110px;  padding: 5px;}
-.icons {position: absolute; top:4px; right:60px; }
+.icons {position: absolute; top:4px; right:60px;}
 .icon {display: inline-block; width: 1.6rem; height: 1.6rem; margin: 0.3rem;}
 /* For the Drop Nav */
 nav ul {list-style: none;padding: 0px;margin: 0px;}

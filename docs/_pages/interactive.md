@@ -1,6 +1,6 @@
 ---
-title: Interactive
+title: Interactive Advanced Example using Vega
 layout: vega
-permalink: interactive
+permalink: vega
 mdfile: interactive.md
 ---
