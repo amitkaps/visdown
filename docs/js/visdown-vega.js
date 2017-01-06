@@ -9,7 +9,7 @@ window.onload = function () {
 	renderer.code = function (code, lang, escaped) {
 		if (lang == "vis") {
 			var jsonVis = YAML.parse(code);
-			var embedSpec = {mode: "vega-lite", spec: jsonVis, renderer: "svg" };
+			var embedSpec = {mode: "vega", spec: jsonVis, renderer: "svg" };
 			counter++;
 			el = "#vis-" + counter;
 			vg.embed(el, embedSpec, function(error, result) {});
@@ -24,10 +24,11 @@ window.onload = function () {
 	var input = document.querySelector("#visdown-input");
 	var output = document.querySelector("#visdown-output");
 
-	window.visdown = function () {
-		console.log('visdown');
+	window.visdownVega = function () {
+		console.log('visdownVega');
 		var markdownText = input.value;
 		output.innerHTML = marked(markdownText, { renderer: renderer });
 	}
-	visdown()
+	visdownVega()
+
 }
