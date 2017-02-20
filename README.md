@@ -10,5 +10,5 @@ Allows you to write *json specification* in simple *yaml* and uses **marked** an
 ---
 
 ## See working prototypes
-- For vega-lite: [http://visdown.amitkaps.com/](http://visdown.amitkaps.com/)
-- For vega: [http://visdown.amitkaps.com/vega](http://visdown.amitkaps.com/vega)
+- For vega-lite: [http://visdown.com/](http://visdown.com/)
+- For vega: [http://visdown.com/vega](http://visdown.com/vega)
