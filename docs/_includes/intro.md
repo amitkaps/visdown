@@ -18,6 +18,9 @@ encoding:
   y:
     type: quantitative
     field: price
+selection:
+  brush:
+    type: interval
 ```
 
 Make detailed visualisations
@@ -47,6 +50,9 @@ config:
   cell:
     width: 450
     height: 300
+selection:
+  brush:
+    type: interval
 ```
 
 # What about interaction?

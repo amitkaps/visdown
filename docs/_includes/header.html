@@ -6,10 +6,16 @@
         <meta name="description" content="Create Simple Visualisation Charts with Markdown">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <script src="/lib/new/vega.js"></script>
+        <script src="/lib/new/vega-lite.js"></script>
+        <script src="/lib/new/vega-embed.js"></script>        
+
+<!--
         <script src="/lib/d3.v3.min.js"></script>
         <script src="/lib/vega.min.js"></script>
         <script src="/lib/vega-lite.min.js"></script>
         <script src="/lib/vega-embed.js"></script>
+-->
         <script src="/lib/marked.js"></script>
         <script src="/lib/yaml.min.js"></script>
 
@@ -49,5 +55,36 @@
             <img class="icon" src="/img/github.svg"></a>
         </div>
       </header>
+      
+      
+      <div id="vis-test"></div>
+
+      
+
+<!--
+
+
+      <div id="vis-test"></div>
+
+<script type="text/javascript">
+  var spec = {
+                "data": {"url": "data/seattle-temps.csv"},
+                "mark": "bar",
+                "encoding": {
+                  "x": {
+                    "timeUnit": "month",
+                    "field": "date",
+                    "type": "temporal"
+                  },
+                  "y": {
+                    "aggregate": "mean",
+                    "field": "temp",
+                    "type": "quantitative"
+                  }
+                }
+              };
+  vega.embed('#vis-test', spec, {"mode":"vega-lite", "renderer": "canvas" });
+</script>
+-->
       <main>
         <textarea id="visdown-input" oninput="visdown()">

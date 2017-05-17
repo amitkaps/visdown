@@ -4,21 +4,40 @@ window.onload = function () {
 	var marked = window.marked;
 	var renderer = new marked.Renderer();
 	var counter = 0;
+	var specs = [];
+	var opts = {"mode": "vega-lite", "renderer": "svg" };
 
-	// Render the ```vis as a vega-lite chart
+
+	// Render the ```vis as a div and save the json spec
 	renderer.code = function (code, lang, escaped) {
 		if (lang == "vis") {
-			var jsonVis = YAML.parse(code);
-			var embedSpec = {mode: "vega-lite", spec: jsonVis, renderer: "svg" };
+			jsonVis = YAML.parse(code);
+			specs.push(jsonVis);
 			counter++;
 			el = "#vis-" + counter;
-			vg.embed(el, embedSpec, function(error, result) {});
 			htmlChart = "<div id='vis-" + counter + "'></div>";
 			return htmlChart;
 		}
 		var result = marked.Renderer.prototype.code.call(this, code, lang, escaped);
 		return result;
 	};
+
+	// Render the vega-lite chart for each json spec
+	vegaliteRender = function (err, content) {
+		console.log(specs);
+		console.log(content)
+		for (var i=0; i < specs.length; i++) {
+			j = i + 1;
+			el = "#vis-" + j;
+			console.log(el);
+			vega.embed(el, specs[i], opts, function(error, result) {
+					console.log("it ran" + i);
+			});
+		}
+		return content;
+	};
+
+
 
 	// Convert from Markdown to HTML
 	var input = document.querySelector("#visdown-input");
@@ -28,6 +47,7 @@ window.onload = function () {
 		console.log('visdown');
 		var markdownText = input.value;
 		output.innerHTML = marked(markdownText, { renderer: renderer });
+		vegaliteRender();
 	}
 	visdown()
 
