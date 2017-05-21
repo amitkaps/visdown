@@ -9,7 +9,7 @@ window.onload = function () {
 	renderer.code = function (code, lang, escaped) {
 		if (lang == "vis") {
 			var jsonVis = YAML.parse(code);
-			var embedSpec = {mode: "vega", spec: jsonVis, renderer: "svg" };
+			var embedSpec = {mode: "vega-lite", spec: jsonVis, renderer: "svg" };
 			counter++;
 			el = "#vis-" + counter;
 			vg.embed(el, embedSpec, function(error, result) {});
