@@ -34,8 +34,8 @@ window.onload = function () {
 		);
 		vegaliteRender();
 
-		var download = viewSource(output.innerHTML);
-		console.log(download);
+		// var download = viewSource(output.innerHTML);
+		// console.log(download);
 
 	}
 	visdown()
