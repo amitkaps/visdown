@@ -1,7 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+
 html, body, main {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   color: #333;
@@ -9,21 +14,22 @@ html, body, main {
 
 textarea, section {
   display: inline-block;
-  width: 49%;
   height: 100%;
+  width: 49%;
   vertical-align: top;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  padding: 40px 10px 0 20px;
+  padding: 40px 20px 0 20px;
 }
 
 section {
   overflow: scroll;
-
+  width: 54%;
 }
 
 textarea {
+  width: 45%;
   border: none;
   border-right: 1px solid #ccc;
   resize: none;
@@ -71,3 +77,12 @@ nav li:hover li {float: none;}
 nav li:hover a {background: #333;}
 nav li:hover li a:hover {background: #000;}
 nav #drop-nav li ul li {border-top: 0px;}
+
+
+.markdown-body {
+		box-sizing: border-box;
+		min-width: 200px;
+		max-width: 980px;
+		margin: 0 auto;
+		padding: 60px 45px;
+	}

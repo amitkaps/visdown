@@ -9,6 +9,11 @@
         <script src="/lib/new/vega.js"></script>
         <script src="/lib/new/vega-lite.js"></script>
         <script src="/lib/new/vega-embed.js"></script>        
+        <script src="/lib/lodash.min.js"></script>        
+
+        <script src="/lib/markdown-it.min.js"></script>
+        <script src="/lib/incremental-dom-min.js"></script>
+        <script src="/lib/markdown-it-incremental-dom.min.js"></script>
 
 <!--
         <script src="/lib/d3.v3.min.js"></script>
@@ -16,14 +21,15 @@
         <script src="/lib/vega-lite.min.js"></script>
         <script src="/lib/vega-embed.js"></script>
 -->
+        <script src="/lib/arrive.min.js"></script>
         <script src="/lib/marked.js"></script>
         <script src="/lib/yaml.min.js"></script>
 
+        <link rel="stylesheet" href="/css/github-markdown.css">
         <link rel="stylesheet" href="/css/visdown.css">
 
     </head>
     <body>
-
       <header>
         <h1>Visdown</h1>
         <nav>
@@ -56,35 +62,7 @@
         </div>
       </header>
       
-      
-      <div id="vis-test"></div>
+      <div id="target"></div>
 
-      
-
-<!--
-
-
-      <div id="vis-test"></div>
-
-<script type="text/javascript">
-  var spec = {
-                "data": {"url": "data/seattle-temps.csv"},
-                "mark": "bar",
-                "encoding": {
-                  "x": {
-                    "timeUnit": "month",
-                    "field": "date",
-                    "type": "temporal"
-                  },
-                  "y": {
-                    "aggregate": "mean",
-                    "field": "temp",
-                    "type": "quantitative"
-                  }
-                }
-              };
-  vega.embed('#vis-test', spec, {"mode":"vega-lite", "renderer": "canvas" });
-</script>
--->
       <main>
-        <textarea id="visdown-input" oninput="visdown()">
+        <textarea id="visdown-input"  oninput="visdown()">

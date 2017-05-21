@@ -1,7 +1,6 @@
 # Visdown
-Make visualisations using only markdown
 
----
+**Make visualisations using only markdown**
 
 Write visualisation using a simple declarative markup like you would write code. Just wrap it in fenced block (three backticks) and mark the language as 'vis'.
 
@@ -18,12 +17,9 @@ encoding:
   y:
     type: quantitative
     field: price
-selection:
-  brush:
-    type: interval
 ```
 
-Make detailed visualisations
+Make interactive visualisations
 
 ```vis
 data:
