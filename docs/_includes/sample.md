@@ -2,7 +2,7 @@
 
 This the most simple dataset available.
 
-areas   |  sales | profit | 
+area    |  sales | profit | 
 :-------|-------:|-------:|
 North   |     5  |      2 |  
 East    |    25  |      8 |  
@@ -26,5 +26,5 @@ encoding:
     field: profit
   color:
     type: nominal
-    field: areas
+    field: area
 ```
