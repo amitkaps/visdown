@@ -15,13 +15,13 @@ LCY    |  JFK   |  BA      |    921 |     90.01 |        5.26  | 2016 |
 LTN    |  EWR   |  DJT     |    333 |     87.05 |        8.44  | 2016 |
 
 Metadata
-- Observations `(n)` : 158
-- Features `(p)`     : 6
+- Observations `(n)` : 157
+- Features `(p)`     : 7
   - `source`  : The source IATA airport code 
-  - `destination` : The destination IATA airport code
+  - `dest` : The destination IATA airport code
   - `airline` : The two letter IATA code for the airline 
   - `flights` : The number of flights in that year
-  - `onTimePer` : The face value of the currency
+  - `onTimePerf` : The face value of the currency
   - `delayAverage` : The monetary value of currency in circulation (in INR Billion)
   - `year`: The number of currency in circulation (in INR Billion)
 
@@ -34,7 +34,8 @@ Make simple visualisations
 data:
   url: "data/london.csv"
 transform:
-  field: datum.year == 2016
+ -
+  filter: datum.year == 2016
 mark: rect
 encoding:
   x:
@@ -44,6 +45,6 @@ encoding:
     type: nominal
     field: dest
   color:
-    type: nominal
+    type: quantitative
     field: flights
 ```
