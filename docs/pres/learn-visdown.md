@@ -16,52 +16,121 @@ _Bargava Subramanian_
 
 ---
 
-# Intent
-
-1. Learn how visualisation is both a **science** and an **art**
-2. Pivot from a charting to a **grammar-based** approach
-3. Create **interactive visualisation** as narratives or dashboards
-
----
-
-# Approach
-
-1. Learn from _**first principles**_
-2. Master a _**tool-agnostic**_ approach
-3. Focus on creating visualisation _**through exercises**_
+# Creating Visualisation
+- Single View
+- Multi-View
+    - Faceting
+    - Layering
+    - Composition
+- Interaction
 
 ---
 
-# Journey
+# Dataset
 
-1. Paper and Pen exercise (15 mins)
-2. The Grammar of Interactive Graphics (30 mins)
-3. Static visualisation (45 mins)
-    - Single-view 
-    - Multi-view (Layering & Compositions)
-4. Interactive visualisation (90 mins)
-    - Interaction patterns
-    - Narratives and Dashboards
+- Observations `(n)` : 157
+- Features `(p)`     : 7
+- Source: It is adapted from flight punctuality statistics from the London Civil Aviation Authority
+
+# [http://visdown.com/london](http://visdown.com/london)
 
 ---
 
-# Paper and Pen Exercise
+# Variables
+
+- `source`  : The source IATA airport code 
+- `dest` : The destination IATA airport code
+- `airline` : The two letter IATA code for the airline 
+- `flights` : The number of flights in that year
+- `onTimePerf` : The precentage of flights on-time in that route
+- `delayAverage` : The average delay in minutes for that route and airline
+- `year`: The year of data
 
 ---
 
-# EXERCISE: Create 10 visualisations for this dataset
+# Flights Dataset
 
-area      |    sales      |   profit     |
-:----------|  -----------: | -----------: |
-North      |        5      |      2       |
-East       |       25      |      8       |
-West       |       15      |      6       |
-South      |       20      |      5       |
-Central    |       10      |      3       |
+source | dest   |  airline | flights| onTimePerf| delayAverage | year |
+:------|:-------|:---------|-------:|----------:|-------------:|-----:|
+LHR    |  ORD   |  AA      |   2490 |     63.33 |       21.11  | 2010 |
+LHR    |  ORD   |  BA      |   1413 |     57.36 |       23.30  | 2010 |
+LHR    |  ORD   |  UA      |   2105 |     73.24 |       14.57  | 2010 |
+LHR    |  ORD   |  VS      |    218 |     77.06 |       11.10  | 2010 |
+...    | ...    |    ...   |  ...   |     ...   |        ...   |  ... |
+LHR    |  IAD   |  US      |   2134 |     82.05 |       13.24  | 2016 |
+LHR    |  IAD   |  VS      |    699 |     84.69 |        8.02  | 2016 |
+LCY    |  JFK   |  BA      |    921 |     90.01 |        5.26  | 2016 |
+LTN    |  EWR   |  DJT     |    333 |     87.05 |        8.44  | 2016 |
+
 
 ---
 
-## Do the Exercise
+# Single View
+
+_What is total number of flights by Source & Destination in 2016?_
+
+![inline 100%](img/basic.png)
+
+---
+
+![right 100%](img/basic.png)
+
+# Single View
+
+```yaml
+data:
+  url: "data/london.csv"
+transform:
+ -
+   filter: datum.year == 2016
+mark: rect
+encoding:
+  x:
+    type: nominal
+    field: source
+  y:
+    type: nominal
+    field: dest
+  color:
+    type: quantitative
+    field: flights
+    aggregate: sum
+```
+
+---
+
+# Multi View - Facet
+
+_What is total number of flights by Source & Destination for each year?_
+
+![inline 100%](img/facet.png)
+
+---
+
+![right 60%](img/facet.png)
+
+
+# Multi View - Facet
+
+```yaml
+data:
+  url: "data/london.csv"
+mark: rect
+encoding:
+  x:
+    type: nominal
+    field: source
+  y:
+    type: nominal
+    field: dest
+  color:
+    type: quantitative
+    field: flights
+    aggregate: sum
+  column:
+    field: year
+    type: nominal
+```
 
 ---
 
@@ -70,133 +139,165 @@ Central    |       10      |      3       |
 
 ---
 
-## Why do we need a grammar?
+# Multi View - Layering
+
+_What is total number of flights and average of number flights leaving London?_
+
+![inline ](img/layering.png)
 
 ---
 
-## Approach to Visualisation
-Charting - Grammar - Canvas
+![right 100% ](img/layering.png)
+
+
+# Multi View - Layering
+
+```yaml
+width: 400
+data:
+    url: "data/london.csv"
+layer:
+ -
+  mark: rect
+  encoding:
+    x:
+     type: nominal
+     field: source
+    y:
+     type: quantitative
+     field: flights
+     aggregate: average
+ -
+  mark: rule
+  encoding:
+    y:
+     type: quantitative
+     field: flights
+     aggregate: average
+    color:
+      value: red
+    size:
+      value: 3
+```
 
 ---
 
-## The Grammar of Interactive Graphics
+# Multi View - Composition
 
-- Data Layer
-- Visual Layer
-- Annotation Layer
-- Interaction Layer
+_What is total number of flights and average delay by Source & Destination for each year?_
 
----
-
-Give an example to build this up.
+![inline 100%](img/composition.png)
 
 ---
 
-# Data Layer
-**Types**
-- Categorical: Nominal, Ordinal
-- Continuous: Temporal, Quantiative
+![right 100%](img/composition.png)
 
-**Transformations**
-- Tall <-> Wide
-- Aggregation (Bins)
-- Basic Stats (Min, Max, Average)
-- New Variables - Geocoding
-- Filtering, Refining
+# Composition
 
----
-
-# Visual Representation
-- Marks: Points, Tick, Lines, Bar, Area, Glyphs
-- Aesthetics: Size, Color, Shape
-- Coordinate: Cartesian, Polar, Geographic, Parellel
-- Layout: Single, Row-Wise, Column-Wise, **Multi-Chart**
+```
+hconcat:
+  - 
+    <first chart spec>
+  - 
+    <second chart spec>
+```
 
 ---
 
-# Annotations
-- Labels: X, Y
-- Title
-- Axis and Tick marks
-- Legends
-- **Story Elements**
+```yaml
+hconcat:
+ -
+  data:
+    url: "data/london.csv"
+  transform:
+   -
+    filter: datum.year == 2016
+  mark: rect
+  encoding:
+    x:
+     type: nominal
+     field: source
+    y:
+     type: nominal
+     field: dest
+    color:
+     type: quantitative
+     field: flights
+     aggregate: sum
+ -
+  data:
+    url: "data/london.csv"
+  transform:
+   -
+    filter: datum.year == 2016
+  mark: bar
+  encoding:
+    x:
+     type: nominal
+     field: source
+    y:
+     type: nominal
+     field: dest
+    color:
+     type: quantitative
+     field: delayAverage
+     aggregate: mean
+```
 
 ---
 
-# Interaction
-- Annotation: on hover
-- Highlighting
+
+# Interaction: Brushing
+
+_Select a particular Source & Destination in the visualisation for number of flights in 2016?_
+
+![inline fit%](img/brushing.png)
 
 ---
 
-# **Data Types e.g. Temperature**
+![right 100%](img/brushing.png)
 
-- **Categorical** 
-    - *Nominal*: Burned, Not Burned
-    - *Ordinal*: Hot, Warm, Cold
-- **Continuous**
-    - *Interval*: 30 °C, 40 °C, 80 °C 
-    - *Ratio*: 30 K, 40 K, 50 K 
+# Interaction: Brushing
 
----
+```yaml
 
-# **Data Types - Operations**
-
-- **Categorical** 
-  - *Nominal*: = , !=
-  - *Ordinal*: =, !=, >, <
-- **Continuous**
-  - *Interval*: =, !=, >, <, -, % of diff 
-  - *Ratio*: =, !=, >, <, -, +, %
-
-
----
-
-# Data Analysis Framework
-
-Process Steps Slide 
-
----
-
-# Types of Questions
-
----
-
-# Types of Questions
-
-- Descriptive: What are the average delays in London Airport
-    - By airport
-    - By airline
-    - By destination
-- Inquisitive: Has flight delays being increasing?
-    - By airport
-    - By airline
-    - By destination
-- Predictive: Plan a vacation to NYC
-    - Which airport should I leave from?
-    - Which airline should I book on?
-
+width: 400
+height: 400
+data:
+  url: "data/london.csv"
+transform:
+  - 
+   filter: datum.year == 2016
+selection:
+  brush:
+   type: interval
+mark: rect
+encoding:
+  x:
+    type: nominal
+    field: source
+  y:
+    type: nominal
+    field: dest
+  color:
+    type: quantitative
+    field: flights
+    aggregate: sum
+    condition: 
+      selection: "!brush"
+      value: grey
+```
 
 ---
 
-# Data
+# [fit] Interactive Data Visualisation
+# _Using Visdown at [http://visdown.com](http://visdown.com)_
 
-## London Punctuality Dataset
+<br>
 
-source, country, destination, airline, type: nominal
-flights, delay* : quantiative
-year: temporal
+_Amit Kapoor_
+[amitkaps.com](http://amitkaps.com)
 
-Source: Where is the data from?
+_Bargava Subramanian_
+[@bargava](https://twitter.com/bargava)
 
----
-
-# Q1: What are the number of flights from each airport
-
-
-
-
-
----
-
-## 

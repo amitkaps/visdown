@@ -15,20 +15,22 @@ The one and only modification to markdown is to add static and interactive visua
 
 ```vis
 data:
-  url: "data/notes.csv"
+  url: "data/london.csv"
 transform:
-  filter: datum.year == 1977
-mark: bar
+ -
+   filter: datum.year == 2016
+mark: rect
 encoding:
   x:
     type: nominal
-    field: denom
+    field: source
   y:
-    type: quantitative
-    field: money
-  color:
     type: nominal
-    field: denom
+    field: dest
+  color:
+    type: quantitative
+    field: flights
+    aggregate: sum
 ```
 
 Lets build this visualisation step by step
@@ -39,76 +41,99 @@ We can add the data in directly, csv or json using the `data` entry and then enc
 
 ```vis
 data:
-  url: "data/notes.csv"
-mark: bar
+  url: "data/london.csv"
+mark: rect
 ```
 
 ## Encoding
 
-Right now every field is mapped to this one bar. We need to add the encoding channel to define which field we want to show. So lets add `x`channel to encoding.
+Right now every field is mapped to this one rectangle. We need to add the encoding channel to define which field we want to show. So lets add `x`channel to encoding.
 
 ```vis
 data:
-  url: "data/notes.csv"
-mark: bar
+  url: "data/london.csv"
+mark: rect
 encoding:
   x:
     type: nominal
-    field: denom
+    field: source
 ```
 
-Now we can see the eight bars corresponding to the 8 denoms that are there. Now if we add a 'y' channel to the mix, we will start to see the bars corresponding to the height of `money` value in it.
+Now we can see the four rect corresponding to the 4 source destination that are there. Now if we add a 'y' channel to the mix, we will start to see the rect corresponding to the `dest` value in it.
 
 ```vis
 data:
-  url: "data/notes.csv"
+  url: "data/london.csv"
 mark: bar
 encoding:
   x:
     type: nominal
-    field: denom
+    field: source
   y:
-    type: quantitative
-    field: money
+    type: nominal
+    field: dest
 ```
 
-We can add the `color` channel to color them by the `denom` type
+We can add the `color` channel to color them by the `flights`
 
 ```vis
 data:
-  url: "data/notes.csv"
+  url: "data/london.csv"
 mark: bar
 encoding:
   x:
     type: nominal
-    field: denom
+    field: source
   y:
-    type: quantitative
-    field: money
+    type: nominal
+    field: dest
   color:
+    type: quantitative
+    field: flights
+```
+
+However we need to do color them by the sum of number of flights
+
+```vis
+data:
+  url: "data/london.csv"
+mark: rect
+encoding:
+  x:
     type: nominal
-    field: denom
+    field: source
+  y:
+    type: nominal
+    field: dest
+  color:
+    type: quantitative
+    field: flights
+    aggregate: sum
 
 ```
 
 ## Transform
 
-We want to show this chart for one particular `year`, which is 1977. So we need to transform the data and filter it for only that year. Lets do that.
+We want to show this chart for one particular `year`, which is 2016. So we need to transform the data and filter it for only that year. Lets do that.
 
 ```vis
 data:
-  url: "data/notes.csv"
+  url: "data/london.csv"
 transform:
-  filter: datum.year == 1977
-mark: bar
+ -
+  filter: datum.year == 2016
+mark: rect
 encoding:
   x:
     type: nominal
-    field: denom
+    field: source
   y:
-    type: quantitative
-    field: money
-  color:
     type: nominal
-    field: denom
+    field: dest
+  color:
+    type: quantitative
+    field: flights
+    aggregate: sum
+
 ```
+
