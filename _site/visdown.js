@@ -33,22 +33,6 @@ window.onload = function () {
 			md.renderToIncrementalDOM(markdownText)
 		);
 		vegaliteRender();
-
-		// var download = viewSource(output.innerHTML);
-		// console.log(download);
-
 	}
 	visdown()
-
-	function viewSource(source) {
-		var header = '<html><head>' + " " + '</head>' + '<body><pre><code class="json">';
-		var footer = '</code></pre>' + " " + '</body></html>';
-		var doc = header + source + footer;
-		var win = window.open('');
-		//win.document.write(header + source + footer);
-		//win.document.title = 'Vega JSON Source';
-		return doc;
-	}
-
-
 }

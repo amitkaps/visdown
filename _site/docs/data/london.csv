@@ -1,4 +1,4 @@
-"source","destination","airline","flights","ontimePerf","delayAverage","year"
+"source","destination","airline","flights","ontimePercent","delayAverage","year"
 "LGW","JFK","BA",7,0,0,2010
 "LGW","JFK","VS",1,0,0,2010
 "LGW","EWR","CO",1,0,0,2010
