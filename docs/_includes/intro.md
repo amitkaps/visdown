@@ -8,7 +8,7 @@ Write visualisation using a simple declarative markup like you would write code.
 
 ```vis
 data:
-  url: "data/cars.csv"
+  url: data/cars.csv
 mark: point
 encoding:
   x:
@@ -27,10 +27,6 @@ Visdown is based on the grammar of interactive graphic (vega-lite) which allows 
 data:
   url: "data/cars.csv"
 mark: circle
-selection:
-   brush:
-     type: interval
-     
 encoding:
   x:
     type: quantitative
@@ -53,6 +49,7 @@ height: 300
 ```
 
 # Concept and Code
+
 Allows you to write **json** specification in simple **yaml** and uses **marked** and **vega-lite** to convert those specific code blocks in to svg.
 
 - yaml -> json (using [yaml.js](https://github.com/jeremyfa/yaml.js))

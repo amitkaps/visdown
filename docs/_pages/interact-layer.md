@@ -1,6 +1,6 @@
 ---
 title: Interaction Layer
-layout: vega
+layout: vegalite
 permalink: interact-layer
 mdfile: interact-layer.md
 ---

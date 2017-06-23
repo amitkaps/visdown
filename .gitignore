@@ -1,2 +1,7 @@
 .DS_Store
 /docs/_site
+node_modules
+.jekyll-metadata
+build/
+docs/Gemfile.lock
+npm-debug.log

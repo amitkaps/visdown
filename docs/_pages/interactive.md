@@ -1,6 +1,6 @@
 ---
 title: Interactive Advanced Example using Vega
-layout: vega
+layout: vegalite
 permalink: vega
 mdfile: interactive.md
 ---
