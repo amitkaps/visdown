@@ -16,7 +16,7 @@ _Bargava Subramanian_
 
 ---
 
-# Creating Visualisation
+# **Creating Visualisation**
 - Single View
 - Multi-View
     - Faceting

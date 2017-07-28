@@ -21,12 +21,17 @@ encoding:
 
 Visdown is based on the grammar of interactive graphic (vega-lite) which allows you to specify the visualisation including interactions in a declarative fashion.
 
-*Make detailed visualisations*
+*Make interactive visualisations*
+
+Select the circles with the mouse
 
 ```vis
 data:
   url: "data/cars.csv"
 mark: circle
+selection:
+  brush:
+    type: interval
 encoding:
   x:
     type: quantitative
@@ -39,8 +44,11 @@ encoding:
     scale:
      domain: [100,900]
   color:
-    type: nominal
-    field: type
+    condition:
+      selection: brush
+      field: type
+      type: nominal
+    value: grey
   size:
     type: quantitative
     field: bhp
