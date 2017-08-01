@@ -46,7 +46,8 @@ Change the `fields` in `x` ,`y`, `shape`, `size` and `color`
 data:
   url: "data/notes.csv"
 transform:
-  filter: datum.year > 2010
+  -
+    filter: datum.year > 2010
 mark: circle
 encoding:
   x:
@@ -122,7 +123,8 @@ We can also create small multiple charts using `row` or `column` encoding
 data:
   url: "data/notes.csv"
 transform:
-  filter: datum.denom > 50
+  -
+    filter: datum.denom > 50
 mark: area
 encoding:
   x:

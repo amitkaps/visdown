@@ -37,7 +37,8 @@ Lets filter this data for denominations greater than INR 10.
 data:
   url: "data/notes.csv"
 transform:
-  filter: datum.value > 10
+  -
+    filter: datum.value > 10
 mark: line
 encoding:
   x:

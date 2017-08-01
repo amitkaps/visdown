@@ -31,9 +31,10 @@ Make simple visualisations
 
 ```vis
 data:
-  url: "data/notes.csv"
+  url: data/notes.csv
 transform:
-  field: datum.year == 2016
+  - 
+    filter: datum.year == 2015
 mark: bar
 encoding:
   x:
