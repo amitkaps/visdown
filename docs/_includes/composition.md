@@ -223,7 +223,7 @@ width: 400
 height: 300
 data:
   url: data/notes.csv
-mark: bar
+mark: line
 encoding:
   x:
     field: year
@@ -236,7 +236,9 @@ encoding:
     field: number
     type: quantitative
   size:
-    value: 7
+    value: 3
+  color:
+    value: black
 
 ```
 
@@ -266,7 +268,7 @@ layer:
     color:
       field: denom
       type: nominal
-- mark: bar
+- mark: line
   encoding:
     x:
       field: year
@@ -279,7 +281,9 @@ layer:
       field: number
       type: quantitative
     size:
-      value: 7
+      value: 3
+    color:
+      value: black
 resolve:
   y:
     scale: independent
