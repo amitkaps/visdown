@@ -16,7 +16,7 @@ window.onload = function () {
 	specs = [];
 	var opts = {"mode": "vega-lite",
                 "renderer": "svg",
-                "actions": {export: true, source: false, editor: false}
+                "actions": {export: false, source: false, editor: false}
                };
 
 	//Render the vega-lite chart for each json spec
