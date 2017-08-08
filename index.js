@@ -2,7 +2,7 @@ window.onload = function () {
 
 	var md = new markdownit().use(markdownitIncrementalDOM)
 	var specs = [];
-	var opts = {"mode": "vega-lite", 
+	var opts = {"mode": "vega-lite",
                 "renderer": "svg",
                 "actions": {export: true, source: false, editor: false}
                };
@@ -27,9 +27,9 @@ window.onload = function () {
 
 	window.visdown = function () {
 		console.log('visdown');
-		var markdownText = input.value;		
+		var markdownText = input.value;
         IncrementalDOM.patch(
-			output, 
+			output,
 			md.renderToIncrementalDOM(markdownText)
 		);
 		vegaliteRender();
