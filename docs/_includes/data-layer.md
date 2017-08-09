@@ -21,10 +21,10 @@ encoding:
 ```
 
 ## Transforming the Data
-- Filter
-- Aggregation (e.g. min, max, sum, ...)
-- Binning
-- Create New Variables
+- Filter, Sort
+- Aggregate (e.g. min, max, sum, ...)
+- Bin 
+- Derive (new variable)
 - Sample
 - Reshape (e.g. tall <-> wide)
 

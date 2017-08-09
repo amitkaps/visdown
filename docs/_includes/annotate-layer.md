@@ -2,7 +2,7 @@
 
 - Title and Labels
 - Axis and Tick marks
-- Legends
+- Guides e.g. Legends
 - Grids and Reference marks
 - Text Annotation
 - Story Elements

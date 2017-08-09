@@ -1,4 +1,4 @@
-"source","dest","airline","flights","onTimePerf","delayAverage","year"
+"source","dest","airline","flights","onTimePerf","delayAvg","year"
 "LHR","ORD","AA",2490,66.33,21.11,2010
 "LHR","ORD","BA",1413,57.63,23.3,2010
 "LHR","ORD","UA",2105,73.24,14.57,2010
