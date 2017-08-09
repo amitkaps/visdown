@@ -1,7 +1,7 @@
 # visdown
 ## Visualisation Markdown
 
-Demo -> [http://visdown.amitkaps.com](http://visdown.amitkaps.com)
+Demo -> [http://visdown.com/](http://visdown.com/)
 
 Allows you to write *json specification* in simple *yaml* and uses **marked** and **vega-lite** (or vega) to convert those specific code blocks in to svg.
 
