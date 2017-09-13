@@ -1,19 +1,15 @@
 {
   "name": "visdown",
   "version": "0.0.1",
-  "description": "Make Visualisation using Markdown",
+  "description": "Make Visualisations using Markdown",
   "keywords": [
     "markdown",
     "visualisation",
     "interaction",
-    "vega",
     "vega-lite",
     "analytics"
   ],
-  "author": {
-    "name": "Amit Kapoor",
-    "url": "http://amitkaps.com"
-  },
+  "author": "Amit Kapoor (http://amitkaps.com)",
   "license": "MIT",
   "main": "build/visdown.js",
   "homepage": "https://github.com/amitkaps/visdown",
@@ -26,17 +22,22 @@
   },
   "scripts": {
     "pretest": "rm -rf build && mkdir build && rollup -f umd -n d3 -o build/visdown.js -- index.js",
-    "test": "tape 'test/**/*-test.js'",
-    "prepublish": "npm run test && uglifyjs build/visdown.js -c -m -o build/visdown.min.js",
+    "prepublish": "uglifyjs build/visdown.js -c -m -o build/visdown.min.js",
     "postpublish": "zip -j build/visdown.zip -- LICENSE README.md build/visdown.js build/visdown.min.js"
   },
   "dependencies": {
-    "datalib": "^1.7.3",
-    "vega-lite": "^2.0.0-beta.4"
+    "yamljs": "0.3.0",
+    "marked": "0.3.6",
+    "d3": "^4.10.2",
+    "vega": "^3.0.2",
+    "vega-lite": "^2.0.0-beta.21",
+    "vega-embed": "3.0.0-beta.20"
   },
   "devDependencies": {
     "rollup": "^0.42.0",
-    "tape": "^4.6.3",
     "uglify-js": "^3.0.15"
+  },
+  "directories": {
+    "doc": "docs"
   }
 }

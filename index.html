@@ -1,0 +1,50 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Visdown - Markdown for Visualisation</title>
+<meta name="description" content="Create Simple Visualisation Charts with Markdown">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css">    
+<link rel="stylesheet" href="/static/css/codemirror.css">
+<link rel="stylesheet" href="/static/css/github-markdown.css">
+<link rel="stylesheet" href="/static/css/visdown.css">
+
+<!-- Code Mirror Editor Dependencies -->
+<script src="/static/lib/codemirror.js"></script>
+<script src="/static/lib/markdown.js"> </script>
+
+<!-- Vega, Vega-Lite Dependencies -->
+<script src="/static/lib/vega.min.js"></script>
+<script src="/static/lib/vega-lite.min.js"></script>
+<script src="/static/lib/vega-embed.min.js"></script>
+
+<!-- Markdown Dependencies -->
+<script src="/static/lib/marked.js"></script>
+  
+<header>
+  <a href="/"><img class="logo" src="/static/img/visdown.svg"></a>    
+  <nav>
+    <a href="/"><img class="icon" src="/static/img/view.svg"></a>
+    <a href="/"><img class="icon" src="/static/img/pencil.svg"></a>
+    <a href="#data"><img class="icon" src="/static/img/datasets.svg"></a>
+    <a href="#share"><img class="icon" src="/static/img/share.svg"></a>
+
+    <div class="icons-bottom">
+      <a href="http://twitter.com/amitkaps" target="_blank">
+        <img class="icon right" src="/static/img/twitter.svg"></a>
+      <a href="http://github.com/amitkaps/visdown" target="_blank">
+        <img class="icon right" src="/static/img/github.svg"></a> 
+      </div> 
+  </nav>
+</header>
+
+<main>
+  <textarea id="visdown-input">
+  </textarea>
+  <section id="visdown-output" class="markdown-body"></section>
+</main>
+    
+<script src="js/grammar.js"></script>
+    
+  
+    

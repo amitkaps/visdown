@@ -1,0 +1,116 @@
+html {
+  overflow: hidden;
+  height: 100%
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 18px;
+  text-rendering: optimizeLegibility;
+  color: #333;
+  background-color: #FDFDFD;
+  -webkit-transition: all 600ms;
+	-moz-transition: all 600ms;
+	-ms-transition: all 600ms;
+	-o-transition: all 600ms;
+	transition: all 600ms;
+}
+
+header {
+  background-color: #EEE;
+  width: 3.5rem;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* border-right: 1px solid lightgrey;    */
+}
+
+nav {
+  margin-top: 5rem;
+}
+
+.logo {
+  display: block; 
+  position: absolute;
+  width: 3.5rem; 
+  height: 3.5rem; 
+  margin: 0 auto;
+} 
+
+.icon {
+  display: block; 
+  width: 1.6rem; 
+  height: 1.6rem; 
+  margin: 1.2rem auto;
+}
+
+.icons-bottom {
+  width: 3.5rem;
+  position: absolute;
+  bottom: 0;
+}
+
+main {
+  padding: 0;
+  margin: 0 0 0 3.5rem;
+}
+
+
+.CodeMirror {
+  font-family: "Hack", monospace;
+  height: 100%;
+  max-width: 46em;
+  margin: 0 auto;
+  vertical-align: top;
+  box-sizing: border-box;
+  padding: 60px 20px 0 20px;
+}
+
+section {
+  display: none;
+  height: 100%;
+  width: 49%;
+  vertical-align: top;
+  box-sizing: border-box;
+  padding: 60px 20px 0 20px;
+}
+
+section {
+  overflow: scroll;
+  width: 50%;
+}
+
+
+.CodeMirror {
+  background-color: #FDFDFD;
+}
+
+.cm-header { font-family: Helvetica, arial; sans-serif }
+.cm-header-1 { font-size: 150%; }
+.cm-header-2 { font-size: 130%; }
+.cm-header-3 { font-size: 120%; }
+.cm-header-4 { font-size: 110%; }
+.cm-header-5 { font-size: 100%; }
+.cm-header-6 { font-size: 90%; }
+
+.markdown-body pre {
+  background-color: white;
+}
+
+code {
+  color: #f66;
+}
+
+
+
+table {
+  border-spacing: 0.7rem;
+}
+
+h1 {font-size: 2rem;}
+h2 {font-size: 1.6rem;}
