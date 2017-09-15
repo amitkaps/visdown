@@ -6,6 +6,11 @@
 
 ;(function() {
 
+ // Need to have vega, vega-lite and marked as dependencies 
+ const vega = window.vega
+ const vl = window.vl
+ const marked = window.marked
+ 
 // SIMPLE CONVERTOR for VISDOWN
 
 // Create TOKENS by removing | or \n from raw spec
@@ -88,7 +93,7 @@ function parser(lex) {
   return spec;
 }
 
-// Create vdSpec from the visCode
+// Create vlSpec from the visCode
 function spec(visCode) {
   let tokens = tokenizer(visCode);
   let lex = lexer(tokens);
@@ -98,7 +103,6 @@ function spec(visCode) {
  
 
 // Start Marked Renderer
-const marked = window.marked;
 const renderer = new marked.Renderer();
 marked.setOptions({
   renderer: renderer,
@@ -126,79 +130,40 @@ function hashFnv32a(str, seed) {
   return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
 }
 
-
-
-// //Create the keys and blocks of text and vis
-// function _keys(tokens) {
-//   let key = 0, start = 0;
-//   let keys = []; 
-//   tokens.forEach(function(d, i){
-//     if ( d.type === "code" && d.lang === "vis") {
-//       keys.push({"key": key, "type":"text", "start": start, "end": i})
-//       key = key + 1; start = i+1;
-//       keys.push({"key": key, "type":"vis", "start": i, "end": i+1})
-//       key = key + 1
-//     } 
-//   })
-//   // Last element is text
-//   if (keys.slice(-1).end != tokens.length) {
-//     keys.push({"key": key, "type":"text", "start": start, "end": tokens.length})
-//   }   
-//   return keys;
-// }
-
-// function _fragment(start, end, tokens, links) {
-//   toks = tokens.slice(start, end);
-//   toks.links = links;
-//   fragment = marked.parser(tokens)
-//   return fragment
-// }
-
-// function _html(keys, tokens, links) {
-//   keys.forEach(function (key) {
-//     IncrementalDOM.elementOpen('div', key.key);
-//     IncrementalDOM.text(
-//       _fragment(key.start, key.end, tokens, links)
-//     );
-//     IncrementalDOM.elementClose('div'); 
-//   })
-// }  
-
-// // Add the hash in the ```vis
-// renderer.code = function (code, lang, escaped) {
-//   if (lang == "vis") {
-//     el = "#vis-" + counter;
-//     htmlChart = "<div id='vis-" + hash + "'></div>";
-//     return htmlChart;
-//   }
-//   var result = marked.Renderer.prototype.code.call(this, code, lang, hash, escaped);
-//   return result;
-// };
-
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-function _debounce(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
-};
-
 const opts = {
   "mode": "vega-lite",
   "renderer": "svg",
   "actions": {export: false, source: false, editor: false}
 };
+
+
+function embed(el, spec, opt) {
+  opt = opt || {};
+  var renderer = opt.renderer || 'svg';
+  var runtime = vl.compile(spec).spec; // may throw an Error if parsing fails
+  var view = new vega.View(runtime)
+    .logLevel(vega.Warn) // set view logging level
+    .initialize(el) // set parent DOM element
+    .renderer(renderer) // set render type (defaults to 'svg')
+    .run(); // update and render the view    
+  return Promise.resolve({view: view});
+}
+
+
+/**
+ * Embed a Vega-lite visualization component in a web page.
+ *
+ * @param el        DOM element in which to place component (DOM node or CSS selector)
+ * @param spec      Object : The Vega/Vega-Lite specification as a parsed JSON object.
+ * @param opt       A JavaScript object containing options for embedding.
+ */
+function embedMain(el, spec, opt) {
+  // Ensure any exceptions will be properly handled
+  return new Promise((accept, reject) => {
+    embed(el, spec, opt).then(accept, reject);
+  });
+}
+
 
 //Render the vega-lite chart for each json spec
 function _render(element) {
@@ -207,11 +172,11 @@ function _render(element) {
   for (var i=0; i < num; i++) {
     let el = "#vis-" + i;
     let jsonSpec = spec(specs[i].textContent)
-    //console.log(jsonSpec)
+    console.log(jsonSpec)
     //console.log(vl.compile(jsonVis).spec == undefined)
-    htmlString = "<div id='vis-" + i + "'></div>"
-    specs[i].insertAdjacentHTML('beforebegin', htmlString);
-    // specs[i].style.display = 'none';
+    htmlString = "<div class='vega-embed' id='vis-" + i + "'></div>"
+    specs[i].parentNode.insertAdjacentHTML('beforebegin', htmlString);
+    specs[i].parentNode.style.display = 'none';
     vega.embed(el, jsonSpec, opts);
   };
 };
@@ -219,21 +184,12 @@ function _render(element) {
 function visdown(input, element) {
   console.log('visdown');
   let visdownText = input;
-  //console.log(_textparser(visdownText))
-  let tokens = marked.lexer(visdownText)
-  let links = tokens.links
-  //console.log(tokens)
-  //keys = _keys(tokens);
-  //console.log(keys)
-  // IncrementalDOM.patch(element, function() {
-  //   _html(keys, tokens, links);
-  // })
-  // _blocks(tokens, links, keys, element)
+  //let tokens = marked.lexer(visdownText)
+  //let links = tokens.links
   //element.innerHTML = marked.parser(tokens);
-  //element.innerHTML = marked(visdownText);
+  element.innerHTML = marked(visdownText);
   _render(element);
 }
-
 
 if (typeof module !== 'undefined' && typeof exports === 'object') {
   module.exports = visdown;

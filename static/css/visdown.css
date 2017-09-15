@@ -9,20 +9,32 @@ body {
   height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 18px;
+  font-family: 'PT Sans', sans-serif;
+  font-size: 20px;
   text-rendering: optimizeLegibility;
-  color: #333;
+	transition: all 700ms;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'PT Serif', sans-serif;
+}
+
+h1 {
+  font-size: 2rem;}
+h2 {
+  font-size: 1.6rem;}
+
+.yin {
+  color: #111;  
   background-color: #FDFDFD;
-  -webkit-transition: all 600ms;
-	-moz-transition: all 600ms;
-	-ms-transition: all 600ms;
-	-o-transition: all 600ms;
-	transition: all 600ms;
+}
+
+.yang {
+  color: #FDFDFD;  
+  background-color: #111;
 }
 
 header {
-  background-color: #EEE;
   width: 3.5rem;
   position: absolute;
   top: 0;
@@ -47,6 +59,7 @@ nav {
   width: 1.6rem; 
   height: 1.6rem; 
   margin: 1.2rem auto;
+  cursor: pointer;
 }
 
 .icons-bottom {
@@ -55,42 +68,36 @@ nav {
   bottom: 0;
 }
 
-main {
+#editor {
   padding: 0;
   margin: 0 0 0 3.5rem;
 }
 
-
 .CodeMirror {
-  font-family: "Hack", monospace;
+  font-family: "Roboto Mono", monospace;
   height: 100%;
   max-width: 46em;
   margin: 0 auto;
   vertical-align: top;
   box-sizing: border-box;
-  padding: 60px 20px 0 20px;
+  padding: 20px 20px 0 20px;
+  background-color: #FDFDFD; 
+  transition: all 700ms;  
 }
 
-section {
+#output {
   display: none;
   height: 100%;
-  width: 49%;
+  max-width: 46em;
+  margin: 0 auto;  
   vertical-align: top;
   box-sizing: border-box;
   padding: 60px 20px 0 20px;
 }
 
-section {
-  overflow: scroll;
-  width: 50%;
+.cm-header { 
+  font-weight: 800;
 }
-
-
-.CodeMirror {
-  background-color: #FDFDFD;
-}
-
-.cm-header { font-family: Helvetica, arial; sans-serif }
 .cm-header-1 { font-size: 150%; }
 .cm-header-2 { font-size: 130%; }
 .cm-header-3 { font-size: 120%; }
@@ -98,15 +105,13 @@ section {
 .cm-header-5 { font-size: 100%; }
 .cm-header-6 { font-size: 90%; }
 
-.markdown-body pre {
+/* .markdown-body pre {
   background-color: white;
 }
 
 code {
   color: #f66;
 }
-
-
 
 table {
   border-spacing: 0.7rem;

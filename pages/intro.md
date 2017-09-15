@@ -7,7 +7,7 @@ Write visualisation using a simple declarative markup like you would write code.
 *Make simple static visualisations*
 
 ```vis
-data(cars.csv) + point(x=kmpl, y=price)
+data(cars.csv) | point(x=kmpl, y=price)
 ```
 
 Visdown is based on the grammar of interactive graphic (vega-lite) which allows you to specify the visualisation including interactions in a declarative fashion.

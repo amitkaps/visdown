@@ -4,9 +4,9 @@
 <meta name="description" content="Create Simple Visualisation Charts with Markdown">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css">    
+<link href="https://fonts.googleapis.com/css?family=PT+Sans:400,400i|PT+Serif:700,700i|Roboto+Mono:400,400i,700" rel="stylesheet">
 <link rel="stylesheet" href="/static/css/codemirror.css">
-<link rel="stylesheet" href="/static/css/github-markdown.css">
+<!-- <link rel="stylesheet" href="/static/css/github-markdown.css"> -->
 <link rel="stylesheet" href="/static/css/visdown.css">
 
 <!-- Code Mirror Editor Dependencies -->
@@ -20,13 +20,16 @@
 
 <!-- Markdown Dependencies -->
 <script src="/static/lib/marked.js"></script>
-  
+<script src="/src/visdown.js"></script>
+
+<body class="yin">
 <header>
   <a href="/"><img class="logo" src="/static/img/visdown.svg"></a>    
   <nav>
-    <a href="/"><img class="icon" src="/static/img/view.svg"></a>
-    <a href="/"><img class="icon" src="/static/img/pencil.svg"></a>
+    <img class="icon" id="view" src="/static/img/view.svg"></button>
+    <img class="icon" id="edit" style="display:none;" src="/static/img/pencil.svg">
     <a href="#data"><img class="icon" src="/static/img/datasets.svg"></a>
+    <img class="icon" id="contrast" src="/static/img/contrast.svg">
     <a href="#share"><img class="icon" src="/static/img/share.svg"></a>
 
     <div class="icons-bottom">
@@ -38,13 +41,13 @@
   </nav>
 </header>
 
-<main>
-  <textarea id="visdown-input">
-  </textarea>
-  <section id="visdown-output" class="markdown-body"></section>
+<main id="editor">
+  <section id="input">
+      <textarea id="input-text"></textarea>
+  </section>
+  <section id="output" class="markdown-body"></section>
 </main>
     
 <script src="js/grammar.js"></script>
-    
-  
+</body>
     
