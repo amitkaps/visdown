@@ -10,7 +10,8 @@ body {
   overflow-y: scroll;
   overflow-x: hidden;
   font-family: 'PT Sans', sans-serif;
-  font-size: 20px;
+  font-size: 16px;
+  line-height: 1.4rem;
   text-rendering: optimizeLegibility;
 	transition: all 700ms;
 }
@@ -74,9 +75,9 @@ nav {
 }
 
 .CodeMirror {
-  font-family: "Roboto Mono", monospace;
+  font-family: "Menlo", monospace;
   height: 100%;
-  max-width: 46em;
+  max-width: 52em;
   margin: 0 auto;
   vertical-align: top;
   box-sizing: border-box;

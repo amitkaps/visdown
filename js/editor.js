@@ -1,18 +1,46 @@
-
-// For CodeMirror Editor Operations
-
+// For Editor Operations
 const visdown = window.visdown
+const datum = window.datum
 
+/**
+ * Calculate a 32 bit FNV-1a hash
+ * Found here: https://gist.github.com/vaiorabbit/5657561
+ * Ref.: http://isthe.com/chongo/tech/comp/fnv/
+ *
+ * @param {string} str the input value
+ * @param {integer} [seed] optionally pass the hash of the previous chunk
+ * @returns {string}
+ */
+function _hashFnv32a(str, seed) {
+  /*jshint bitwise:false */
+  var i, l, hval = (seed === undefined) ? 0x811c9dc5 : seed;
+  for (i = 0, l = str.length; i < l; i++) {
+      hval ^= str.charCodeAt(i);
+      hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+  }
+  // Convert to 8 digit hex string
+  return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
+}
+
+
+// Regex for getting vis code blocks and extracting viscode
 const re = /^((```)vis\s([\s\S]+?)(^\2)\s)/gm
 const newline = /\n/gm
+const visStart = /^```vis\s*\n/gm
+const visEnd = /^```\s*\n/gm
 
 function _countNewline(str){
-  if (str ==="") {return 0 } else {
+  if (str === "") {return 0 } else {
     let newlineMatch = str.match(newline)
     if (newlineMatch === null) {return 0}
     let len = newlineMatch.length
     return len
   }
+}
+
+function _getVisText(str){
+  let visText = str.split(visStart)[1].split(visEnd)[0]
+  return visText
 }
 
 // Create Keys to work with CodeMirror Lines
@@ -23,6 +51,10 @@ function _keys(str) {
   let checkString = str
   let start = 0
   visCode.forEach(function(code, i){
+    let visText = _getVisText(code);
+    let spec = datum(visText)
+    let hash = _hashFnv32a(visText.trim());
+    console.log(spec, code, hash);
     startIndex = checkString.indexOf(code)
     codeLength = code.length
     endIndex = startIndex + codeLength;
@@ -31,33 +63,61 @@ function _keys(str) {
     codeLine = _countNewline(code)
     endLine = startLine + codeLine - 1
     checkString = checkString.substring(endIndex);
-    keys.push({"key": i, "code": code, "newlineCode": codeLine, "start": startLine, "end": endLine})
+    keys.push({
+      "key": i, "code": code, "spec": spec, "hash": hash,
+      "lines": codeLine, "start": startLine, "end": endLine})
     start = endLine + 1
   })
+  console.log(keys);
   return keys
 }
 
+const opts = {
+    "mode": "vega-lite",
+    "renderer": "svg",
+    "actions": {export: false, source: false, editor: false}
+  };
 
 let widgets = []
 function update() {
+
   editor.operation(function(){
-    for (var i = 0; i < widgets.length; ++i)
-      editor.removeLineWidget(widgets[i]);
-    widgets.length = 0;
 
     keys = _keys(editor.getValue());
+
+    // ENTER + UPDATE - Add all new widgets and Update Vis if changed
     keys.forEach(function(key, i){
-      console.log(key)
-      endLine = key.end
-      let msg = document.createElement("div");
-      let icon = msg.appendChild(document.createElement("span"));
-      icon.innerHTML = "!!";
-      icon.className = "lint-error-icon";
-      msg.appendChild(document.createTextNode("vis"));
-      msg.className = "vis";
-      widgets.push(editor.addLineWidget(endLine, msg));
-    }) 
-  }) 
+      let endLine = key.end
+      let spec = key.spec
+      let el;
+      console.log(editor.lineInfo(endLine)[widgets])
+      // ENTER - Add new widget when none exists
+      if (editor.lineInfo(endLine).widgets === undefined) {
+        el = document.createElement("div");
+        el.style.minHeight = 256 + 'px';
+        elVis = el.appendChild(document.createElement("div"));
+        elVis.id = "vis-editor-" + i; 
+        elVis.setAttribute('data-hash', key.hash);
+        editor.addLineWidget(endLine, el);
+        vega.embed(elVis, spec, opts)        
+        console.log(el);
+      } else {
+        node = editor.lineInfo(endLine).widgets[0].node
+        console.log(node)
+        hash = node.getAttribute('data-hash')
+        console.log(hash, key.hash)
+        if (hash != key.hash) {
+          node.setAttribute('data-hash', key.hash);
+          vega.embed(node, spec, opts);
+        } 
+      }
+    })
+
+    // EXIT - Remove all widgets that should no longer exist
+
+    
+  })
+  
 }
 
 
@@ -112,7 +172,6 @@ window.onload = function () {
   text = editor.getValue()
   elInput = document.getElementById("input");
   elCodemirror = editor.getWrapperElement()
-  console.log(elCodemirror)
   elOutput = document.getElementById("output");
   elEditor = document.getElementById("editor");
   elView = document.getElementById("view")
@@ -167,6 +226,6 @@ window.onload = function () {
     waiting = setTimeout(update, 500);
   });
 
-  setTimeout(update, 100);
+  //setTimeout(update, 100);
 
 }
