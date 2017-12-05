@@ -207,24 +207,24 @@ window.onload = function () {
 	// 	darkLayout = !darkLayout;
 	// }
 
-  // function showOutput( event ) {
-  //   console.log("showOutput")
-  //   elView.style.display = "none"
-  //   elEdit.style.display = "block"    
-  //   elInput.style.display = "none";
-  //   elOutput.style.display = "block";
-  //   visdown(text, elOutput);    
-  // }
+  function showOutput( event ) {
+    console.log("showOutput")
+    elView.style.display = "none"
+    elEdit.style.display = "block"    
+    elInput.style.display = "none";
+    elOutput.style.display = "block";
+    visdown(text, elOutput);    
+  }
   
-  // function showInput( event) {
-  //   elView.style.display = "block"    
-  //   elEdit.style.display = "none"    
-  //   elInput.style.display = "block";
-  //   elOutput.style.display = "none";    
-  // }
+  function showInput( event) {
+    elView.style.display = "block"    
+    elEdit.style.display = "none"    
+    elInput.style.display = "block";
+    elOutput.style.display = "none";    
+  }
  
-  // elView.onclick = showOutput
-  // elEdit.onclick = showInput
+  elView.onclick = showOutput
+  elEdit.onclick = showInput
   // elContrast.onclick = changeContrast
   
   var waiting;
