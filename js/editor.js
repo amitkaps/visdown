@@ -1,6 +1,9 @@
 // For Editor Operations
-const visdown = window.visdown
-const datum = window.datum
+// const visdown = window.visdown
+// const vega = window.vega
+// const vl = window.vl
+// const marked = window.marked
+// const YAML = window.yaml
 
 /**
  * Calculate a 32 bit FNV-1a hash
@@ -52,7 +55,7 @@ function _keys(str) {
   let start = 0
   visCode.forEach(function(code, i){
     let visText = _getVisText(code);
-    let spec = datum(visText)
+    let spec = YAML.parse(visText)
     let hash = _hashFnv32a(visText.trim());
     console.log(spec, code, hash);
     startIndex = checkString.indexOf(code)
@@ -99,7 +102,7 @@ function update() {
         elVis.id = "vis-editor-" + i; 
         elVis.setAttribute('data-hash', key.hash);
         editor.addLineWidget(endLine, el);
-        vega.embed(elVis, spec, opts)        
+        vegaEmbed(elVis, spec, opts)        
         console.log(el);
       } else {
         node = editor.lineInfo(endLine).widgets[0].node
@@ -108,7 +111,7 @@ function update() {
         console.log(hash, key.hash)
         if (hash != key.hash) {
           node.setAttribute('data-hash', key.hash);
-          vega.embed(node, spec, opts);
+          vegaEmbed(node, spec, opts);
         } 
       }
     })
@@ -144,6 +147,12 @@ function _debounce(func, wait, immediate) {
 
 window.onload = function () {
 
+   // Need to have vega, vega-lite and marked as dependencies 
+ const vega = window.vega
+ const vl = window.vl
+ const marked = window.marked
+ const YAML = window.yaml
+
   // Codemirror setup
   let sc = document.getElementById("input-text");
   let content = sc.textContent || sc.innerText || sc.innerHTML;
@@ -178,45 +187,45 @@ window.onload = function () {
   elEdit = document.getElementById("edit")
   elContrast = document.getElementById("contrast")
   
-  function changeContrast( event ){
-    elEditor.style.backgroundColor = "white";    
+  // function changeContrast( event ){
+  //   elEditor.style.backgroundColor = "white";    
     
-  }
+  // }
 
-  let darkLayout = false;
-  function changeContrast ( event ) {
-		if ( darkLayout === false ) {
-      document.body.className = 'yang';
-      elCodemirror.style.backgroundColor = "#111"
-      elCodemirror.style.color = "#FDFDFD"
-		} else {
-      document.body.className = 'yin';
-      elCodemirror.style.backgroundColor = "#FDFDFD"
-      elCodemirror.style.color = "#111"
-    }
-    console.log(darkLayout)
-		darkLayout = !darkLayout;
-	}
+  // let darkLayout = false;
+  // function changeContrast ( event ) {
+	// 	if ( darkLayout === false ) {
+  //     document.body.className = 'yang';
+  //     elCodemirror.style.backgroundColor = "#111"
+  //     elCodemirror.style.color = "#FDFDFD"
+	// 	} else {
+  //     document.body.className = 'yin';
+  //     elCodemirror.style.backgroundColor = "#FDFDFD"
+  //     elCodemirror.style.color = "#111"
+  //   }
+  //   console.log(darkLayout)
+	// 	darkLayout = !darkLayout;
+	// }
 
-  function showOutput( event ) {
-    console.log("showOutput")
-    elView.style.display = "none"
-    elEdit.style.display = "block"    
-    elInput.style.display = "none";
-    elOutput.style.display = "block";
-    visdown(text, elOutput);    
-  }
+  // function showOutput( event ) {
+  //   console.log("showOutput")
+  //   elView.style.display = "none"
+  //   elEdit.style.display = "block"    
+  //   elInput.style.display = "none";
+  //   elOutput.style.display = "block";
+  //   visdown(text, elOutput);    
+  // }
   
-  function showInput( event) {
-    elView.style.display = "block"    
-    elEdit.style.display = "none"    
-    elInput.style.display = "block";
-    elOutput.style.display = "none";    
-  }
+  // function showInput( event) {
+  //   elView.style.display = "block"    
+  //   elEdit.style.display = "none"    
+  //   elInput.style.display = "block";
+  //   elOutput.style.display = "none";    
+  // }
  
-  elView.onclick = showOutput
-  elEdit.onclick = showInput
-  elContrast.onclick = changeContrast
+  // elView.onclick = showOutput
+  // elEdit.onclick = showInput
+  // elContrast.onclick = changeContrast
   
   var waiting;
   //Run on editor change

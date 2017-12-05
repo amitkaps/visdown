@@ -1,6 +1,12 @@
 # Datasets
 
-Use these datasets to try out Visdown and start making interactive visualisations.
+You can use external datasets or use the following datasets to try out Visdown.
+
+## Loading data
+You can use any csv, tsv or json file to load your data set. 
+
+```
+data: 
 
 ## Sample
 
@@ -20,7 +26,12 @@ Metadata
 - Dimensions `(p)`   : 3
 
 ```vis
-data(data/sample.csv) | point(x=sales:Q, y=profit:Q, color=area:N)
+data: 
+ - url: sample.csv
+mark: point
+encoding: 
+  x: 
+   (data/sample.csv) | point(x=sales:Q, y=profit:Q, color=area:N)
 ```
 
 ## Cars

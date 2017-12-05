@@ -7,9 +7,16 @@ Write visualisation using a simple declarative markup like you would write code.
 *Make simple static visualisations*
 
 ```vis
-data(cars.csv) 
-filter(datum.kmpl > 20)
-point(x=kmpl:Q, y=price:Q)  
+data:
+  url: data/cars.csv
+mark: point
+encoding: 
+  x: 
+    field: kmpl
+    type: quantitative
+  y: 
+    field: price
+    type: quantitative
 ```
 
 Visdown is based on the grammar of interactive graphic (vega-lite) which allows you to specify the visualisation including interactions in a declarative fashion.
@@ -19,7 +26,34 @@ Visdown is based on the grammar of interactive graphic (vega-lite) which allows 
 Select the circles with the mouse
 
 ```vis
-data(cars.csv) | point(x=kmpl:Q, y=price:Q, color=bhp:Q)
+data:
+  url: "data/cars.csv"
+mark: circle
+selection:
+  brush:
+    type: interval
+encoding:
+  x:
+    type: quantitative
+    field: kmpl
+    scale:
+     domain: [12,25]
+  y:
+    type: quantitative
+    field: price
+    scale:
+     domain: [100,900]
+  color:
+    condition:
+      selection: brush
+      field: type
+      type: nominal
+    value: grey
+  size:
+    type: quantitative
+    field: bhp
+width: 450
+height: 300
 ```
 
 ---
