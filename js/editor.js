@@ -78,7 +78,7 @@ function _keys(str) {
 const opts = {
     "mode": "vega-lite",
     "renderer": "svg",
-    "actions": {export: false, source: false, editor: false}
+    "actions": {export: true, source: false, editor: false}
   };
 
 let widgets = []
