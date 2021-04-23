@@ -1,6 +1,6 @@
 /*
- * visdown - a parser for vega-lite shorthand in markdown
- * Copyright (c) 2016-2017, Amit Kapoor. (MIT Licensed)
+ * visdown - a parser for vega-lite vis in markdown
+ * Copyright (c) 2016-2018, Amit Kapoor. (MIT Licensed)
  * https://github.com/amitkaps/visdown
  */
 

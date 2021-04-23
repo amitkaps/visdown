@@ -1,5 +1,6 @@
-# visdown
-## Visualisation Markdown
+# Visdown
+
+Make visualisation using markdown
 
 Demo -> [http://visdown.com/](http://visdown.com/)
 
@@ -7,6 +8,6 @@ Allows you to write *json specification* in simple *yaml* and uses **marked** an
 
 - yaml -> json (using [yaml.js](https://github.com/jeremyfa/yaml.js))
 - json -> vega-lite -> svg (using [vegalite.js](https://vega.github.io/vega-lite/))
-- markdown -> html (using [markdown-it.js](https://github.com/markdown-it/markdown-it) and [incremental-dom](https://github.com/google/incremental-dom))
+- markdown -> html (using [marked.js](https://github.com/marked)
 
 

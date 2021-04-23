@@ -1,6 +1,6 @@
 {
   "name": "visdown",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Make Visualisations using Markdown",
   "keywords": [
     "markdown",
@@ -21,21 +21,22 @@
     "url": "https://github.com/amitkaps/visdown/issues"
   },
   "scripts": {
-    "pretest": "rm -rf build && mkdir build && rollup -f umd -n d3 -o build/visdown.js -- index.js",
-    "prepublish": "uglifyjs build/visdown.js -c -m -o build/visdown.min.js",
+    "pretest": "rm -rf build && mkdir build && rollup -f umd -n visdown -o build/visdown.js -- index.js",
+    "test": "tape 'test/**/*-test.js'",
+    "prepublish": "npm run test && uglifyjs build/visdown.js -c -m -o build/visdown.min.js",
     "postpublish": "zip -j build/visdown.zip -- LICENSE README.md build/visdown.js build/visdown.min.js"
   },
   "dependencies": {
-    "yamljs": "0.3.0",
-    "marked": "0.3.9",
-    "d3": "^4.10.2",
-    "vega": "^3.0.2",
-    "vega-lite": "^2.0.0-beta.21",
-    "vega-embed": "3.0.0-beta.20"
+    "yamljs": "^0.3.0",
+    "marked": "^2.0.3",
+    "vega": "^5.20.2",
+    "vega-lite": "^5.1.0",
+    "vega-embed": "^6.17.0"
   },
   "devDependencies": {
-    "rollup": "^0.42.0",
-    "uglify-js": "^3.0.15"
+    "rollup": "^2.45.2",
+    "tape": "^5.2.2",
+    "uglify-js": "^3.13.4"
   },
   "directories": {
     "doc": "docs"
