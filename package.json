@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "yamljs": "^0.3.0",
-    "marked": "^2.0.3",
+    "marked": "^0.7.0",
     "vega": "^5.20.2",
     "vega-lite": "^5.1.0",
     "vega-embed": "^6.17.0"
