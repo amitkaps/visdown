@@ -34,12 +34,14 @@ counterpart to that — update it when priorities change, not on every commit.
 
 ## Next
 
-1. **`packages/cli`** (spec §7) — `visdown build <file>.md` → `<file>.html`.
-   The actual v1 deliverable per the spec; held off until the live examples
-   above proved the pipeline out end-to-end in a browser.
-2. **Sourcemaps** (spec §5) — v3 sourcemap from generated `.svelte` back to
+1. **Sourcemaps** (spec §5) — v3 sourcemap from generated `.svelte` back to
    the `.md` source, so Svelte compiler diagnostics and runtime stack traces
-   point at real coordinates instead of generated ones.
+   point at real coordinates instead of generated ones. Doing this before the
+   CLI so the CLI ships with working diagnostics from day one, rather than
+   bolting sourcemaps on after there's a public build command to keep
+   compatible.
+2. **`packages/cli`** (spec §7) — `visdown build <file>.md` → `<file>.html`.
+   The actual v1 deliverable per the spec.
 
 ## Later / unscoped
 
