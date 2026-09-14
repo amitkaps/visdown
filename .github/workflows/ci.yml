@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [next.visdown.com]
   pull_request:
-    branches: [main]
+    branches: [next.visdown.com]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,3 +34,12 @@ jobs:
 
       - name: Build
         run: pnpm run build
+
+      - name: Deploy site to Cloudflare Workers
+        if: github.event_name == 'push' && github.ref == 'refs/heads/next.visdown.com'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: packages/site
+          command: deploy
