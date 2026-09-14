@@ -9,7 +9,7 @@ export type DisplayAppender = (value: unknown) => void;
 export function bindDisplay(container: Element): DisplayAppender {
 	container.replaceChildren();
 	return (value: unknown) => {
-		container.append(value instanceof Node ? value : document.createTextNode(String(value)));
+		container.appendChild(value instanceof Node ? value : document.createTextNode(String(value)));
 	};
 }
 

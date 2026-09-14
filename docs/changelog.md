@@ -5,6 +5,15 @@ just what a user of either would notice. See `git log` for the full history.
 
 ## Unreleased
 
+- Added live examples to `packages/site`: four `.md` documents under
+  `src/examples/` (static, `view()`/`$derived`, `display()`, and all three
+  combined) are compiled to real Svelte components by `@visdown/core` and
+  rendered at `/examples/<slug>`, each with a "view source" toggle. Compiling
+  happens via a `tsx` script (`generate-examples.ts`) run ahead of
+  `dev`/`build`/`check`/`test`, not inside `vite.config.ts` itself — the
+  config loader can't resolve `@visdown/core`'s TS sources. Example pages
+  disable SSR (`view()`'s form-element factories in the new `#lib/inputs`
+  module need a real `document`).
 - Added `display()` codegen: a side-effect-only cell gets its own slot div,
   cleared at the start of each evaluation. A cell with no reactive dependency
   mounts its `display()` calls once via a `mountDisplay` action; a cell

@@ -2,7 +2,12 @@ import { defineConfig } from 'vite-plus';
 import adapter from '@sveltejs/adapter-cloudflare';
 import { sveltekit } from '@sveltejs/kit/vite';
 
-const generated = ['.svelte-kit/**', 'build/**', 'worker-configuration.d.ts'];
+const generated = [
+	'.svelte-kit/**',
+	'build/**',
+	'worker-configuration.d.ts',
+	'src/lib/generated/**'
+];
 
 // The SvelteKit plugin installs a dev-server hook that is incompatible with the
 // Vitest environment. Unit tests cover pure modules plus `import.meta.glob`

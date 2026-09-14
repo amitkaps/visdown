@@ -15,6 +15,7 @@
 	<header>
 		<a href="/" class="brand">Visdown</a>
 		<nav>
+			<a href="/examples">Examples</a>
 			{#each docs as doc (doc.slug)}
 				<a href="/{doc.slug}">{doc.title}</a>
 			{/each}

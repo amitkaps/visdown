@@ -8,19 +8,25 @@
 		"#lib/*": "./src/lib/*"
 	},
 	"scripts": {
-		"dev": "vp dev",
-		"build": "vp build",
-		"check": "svelte-kit sync && wrangler types && vp check && svelte-check --tsconfig ./tsconfig.json",
-		"test": "vp test --run",
+		"generate-examples": "tsx scripts/generate-examples.ts",
+		"dev": "pnpm run generate-examples && vp dev",
+		"build": "pnpm run generate-examples && vp build",
+		"check": "pnpm run generate-examples && svelte-kit sync && wrangler types && vp check && svelte-check --tsconfig ./tsconfig.json",
+		"test": "pnpm run generate-examples && vp test --run",
 		"deploy": "vp build && wrangler deploy",
 		"prepare": "svelte-kit sync && wrangler types"
+	},
+	"dependencies": {
+		"@visdown/core": "workspace:*"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-cloudflare": "^8.0.0-next.6",
 		"@sveltejs/kit": "^3.0.0-next.0",
+		"@types/node": "^24.0.0",
 		"marked": "^18.0.13",
 		"svelte": "^5.57.0",
 		"svelte-check": "^4.6.0",
+		"tsx": "^4.23.13",
 		"typescript": "^6.0.3",
 		"vite": "npm:@voidzero-dev/vite-plus-core@0.3.1",
 		"vite-plus": "0.3.1",

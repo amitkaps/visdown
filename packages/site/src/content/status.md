@@ -19,7 +19,7 @@ not generated from the code.
   Template serialization with brace escaping and `<svelte:head>` from
   frontmatter.
 - Codegen for the **reactive** path: `view()` compiles to an element binding
-  + `$state`, with a runtime `mountView` action (in `packages/core/src/runtime`)
+  and `$state`, with a runtime `mountView` action (in `packages/core/src/runtime`)
   mounting the element into its cell's slot and wiring its `input` event back.
   Cells depending on a reactive one compile to `$derived`/`$derived.by`,
   including the multiple-names object-destructure shape. Only the recognized
@@ -36,6 +36,10 @@ not generated from the code.
   AST-normalized/structural tests, plus a `display()` fixture, and all
   verified to compile with the real Svelte compiler in runes mode, not just
   parse.
+- [Live examples](/examples): `src/examples/*.md` compiled to real Svelte
+  components at dev/build time (`scripts/generate-examples.ts`) and rendered
+  in the browser, covering the static, `view()`/`$derived`, and `display()`
+  paths together.
 
 ## Pending
 

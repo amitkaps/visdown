@@ -21,18 +21,23 @@ counterpart to that — update it when priorities change, not on every commit.
   framework beyond Svelte itself). Benchmark fixtures 2 and a new `display()`
   fixture (spec §6) passing, and all fixtures verified against the real
   Svelte compiler in runes mode, not just AST-parsed.
+- **Live examples on `packages/site`**: `src/examples/*.md` compiled to real
+  Svelte components at dev/build time (`scripts/generate-examples.ts`, run via
+  `tsx` ahead of `dev`/`build`/`check`/`test` — not a Vite plugin, since
+  vite-plus's config loader can't resolve `@visdown/core`'s TS sources itself)
+  and served from `/examples` and `/examples/[slug]` (client-rendered only:
+  `ssr = false`, since `view()`'s DOM calls need a browser). Four examples —
+  static, `view()`/`$derived`, `display()`, and all three combined — each with
+  a "view source" toggle. Verified in a real headless-Chromium run: all four
+  render with no console errors, and both interactive paths (slider →
+  `$derived`, `<select>` → `display()` redraw) update correctly on input.
 
 ## Next
 
-1. **Wire `packages/site` to render compiled `.md` live** — a demo/playground
-   page that runs `packages/core`'s `compile()` on a sample `.md` (or
-   user-edited text) and mounts the result, so the pipeline is visible in the
-   browser before there's a CLI. Priority over the CLI for now — seeing it
-   work end-to-end matters more than the build-tool wrapper.
-2. **`packages/cli`** (spec §7) — `visdown build <file>.md` → `<file>.html`.
-   The actual v1 deliverable per the spec; deliberately held off until the
-   site above proves the pipeline out.
-3. **Sourcemaps** (spec §5) — v3 sourcemap from generated `.svelte` back to
+1. **`packages/cli`** (spec §7) — `visdown build <file>.md` → `<file>.html`.
+   The actual v1 deliverable per the spec; held off until the live examples
+   above proved the pipeline out end-to-end in a browser.
+2. **Sourcemaps** (spec §5) — v3 sourcemap from generated `.svelte` back to
    the `.md` source, so Svelte compiler diagnostics and runtime stack traces
    point at real coordinates instead of generated ones.
 

@@ -1,26 +1,20 @@
 <script lang="ts">
-	import { docs, examples } from '#lib';
+	import { examples } from '#lib';
 </script>
 
-<h1>Visdown</h1>
-<p>Markdown in, Svelte 5 out. Reactive cells, Observable-style, compiled statically.</p>
+<svelte:head>
+	<title>Examples · Visdown</title>
+	<meta name="description" content="Live, interactive documents compiled by Visdown." />
+</svelte:head>
 
-<h2>Examples</h2>
+<h1>Examples</h1>
+<p>Each one is a real <code>.md</code> file, compiled to Svelte and rendered live below.</p>
+
 <div class="cards">
 	{#each examples as example (example.slug)}
 		<a class="card" href="/examples/{example.slug}">
 			<strong>{example.title}</strong>
 			<span>{example.summary}</span>
-		</a>
-	{/each}
-</div>
-
-<h2>Docs</h2>
-<div class="cards">
-	{#each docs as doc (doc.slug)}
-		<a class="card" href="/{doc.slug}">
-			<strong>{doc.title}</strong>
-			<span>{doc.summary}</span>
 		</a>
 	{/each}
 </div>
