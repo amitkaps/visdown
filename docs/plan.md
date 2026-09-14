@@ -7,27 +7,28 @@ counterpart to that — update it when priorities change, not on every commit.
 
 ## Done
 
-- `packages/core`: parser → analyzer → DAG → codegen pipeline, static path
-  only. Spec §6 benchmark fixture 1 passing as an AST-normalized test.
+- `packages/core`: parser → analyzer → DAG → codegen pipeline, static path.
+  Spec §6 benchmark fixture 1 passing as an AST-normalized test.
 - `packages/site`: base-derived SvelteKit + Cloudflare docs shell, deployed
   to next.visdown.com, CI auto-deploys on push.
+- **Reactive codegen, minus `display()`**: `view()` → element binding +
+  `$state` (recognized shape only: `const NAME = view(EXPR);`), `$derived`/
+  `$derived.by` for cells depending on a reactive one (including the
+  multiple-names destructure shape). Runtime shim `mountView` (an action) for
+  `view()`'s element-mount + input-listener wiring. Benchmark fixture 2 (spec
+  §6, the reactive path) passing, and both fixtures verified against the real
+  Svelte compiler in runes mode, not just AST-parsed.
 
 ## Next
 
-1. **Reactive codegen** (`packages/core/src/codegen`) — the "Reactive" column
-   of spec §4's table: `view()` → `$state` + element ref, `$derived`/
-   `$derived.by` for cells that depend on one, `$effect` for `display()`-only
-   cells. This is the biggest remaining piece of `packages/core` and unlocks
-   everything after it.
-2. **Runtime shims** — `view()` and `display()` themselves (spec §4): the
-   slot-clear-on-evaluate behavior for `display()`, the element-mount +
-   input-listener wiring for `view()`.
-3. **Benchmark fixture 2** (spec §6, the reactive path) passing the same
-   AST-normalized way as fixture 1.
-4. **`packages/cli`** (spec §7) — `visdown build <file>.md` → `<file>.html`.
-   This is the actual v1 deliverable per the spec; everything above exists to
-   make this possible.
-5. **Sourcemaps** (spec §5) — v3 sourcemap from generated `.svelte` back to
+1. **`display()` codegen + runtime shim** — the last piece of spec §4's
+   table: the per-cell slot div, cleared at the start of each evaluation, and
+   the `$effect` wrapper for cells that call it. Cells calling `display()`
+   are rejected explicitly today rather than mis-emitted.
+2. **`packages/cli`** (spec §7) — `visdown build <file>.md` → `<file>.html`.
+   This is the actual v1 deliverable per the spec; the pipeline above exists
+   to make this possible.
+3. **Sourcemaps** (spec §5) — v3 sourcemap from generated `.svelte` back to
    the `.md` source, so Svelte compiler diagnostics and runtime stack traces
    point at real coordinates instead of generated ones.
 

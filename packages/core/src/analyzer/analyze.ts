@@ -51,6 +51,13 @@ export interface NameRef {
 	loc: SourceLocation;
 }
 
+export interface ViewBinding {
+	/** The declared name bound to the view's value (`const NAME = view(...)`). */
+	name: string;
+	/** Source text of `view(...)`'s single argument, verbatim. */
+	argCode: string;
+}
+
 export interface CellAnalysis {
 	cellId: string;
 	/** Top-level names this cell exports for other cells to reference. */
@@ -63,7 +70,25 @@ export interface CellAnalysis {
 	freeRefs: NameRef[];
 	/** Whether the cell calls `view(...)` anywhere (spec §4 reactive root). */
 	hasViewCall: boolean;
-	/** Program statement count, for the single/multi-statement codegen split. */
+	/** The recognized `const name = view(expr);` shape, when `hasViewCall` is
+	 *  true and the cell matches it — the only view() shape codegen supports. */
+	viewBinding?: ViewBinding;
+	/** "Single expression, one name" (spec §4's table): the cell is exactly
+	 *  one `const/let NAME = EXPR;` statement. `exprCode` is EXPR's source,
+	 *  for codegen to drop into `$derived(EXPR)` or reuse verbatim. */
+	singleExprInit?: { name: string; exprCode: string };
+	/** Whether the cell calls `display(...)` anywhere — codegen for this is
+	 *  not implemented yet (spec §4's slot/`$effect` path). */
+	hasDisplayCall: boolean;
+	/** Source of the cell's top-level `import` statements, if any — these
+	 *  always hoist verbatim ahead of whatever codegen shape the rest of the
+	 *  cell takes, since an `import` can't live inside a wrapping function. */
+	importCode: string;
+	/** Source of the cell's non-`import` statements (imports assumed to come
+	 *  first, per fixture convention — not re-validated). What `statementCount`
+	 *  counts, and what a `$derived.by`/IIFE wrap's body is built from. */
+	bodyCode: string;
+	/** Non-import statement count, for the single/multi-statement codegen split. */
 	statementCount: number;
 }
 
@@ -105,51 +130,57 @@ function bindPattern(pattern: unknown, bind: (id: Node) => void): void {
 	}
 }
 
-function walk(node: unknown, onUse: (id: Node) => void, onView: () => void): void {
+interface WalkCallbacks {
+	onUse: (id: Node) => void;
+	onView: () => void;
+	onDisplay: () => void;
+}
+
+function walk(node: unknown, cb: WalkCallbacks): void {
 	if (Array.isArray(node)) {
-		for (const child of node) walk(child, onUse, onView);
+		for (const child of node) walk(child, cb);
 		return;
 	}
 	if (!isNode(node)) return;
 
 	switch (node.type) {
 		case 'Identifier':
-			onUse(node);
+			cb.onUse(node);
 			return;
 
 		case 'VariableDeclarator':
 			// `id` is a binding target, not a use — collected separately (see collectBindings).
-			walk(node.init, onUse, onView);
+			walk(node.init, cb);
 			return;
 
 		case 'FunctionDeclaration':
 		case 'FunctionExpression':
 		case 'ArrowFunctionExpression':
-			walk(node.body, onUse, onView);
+			walk(node.body, cb);
 			return;
 
 		case 'ClassDeclaration':
 		case 'ClassExpression':
-			if (node.superClass) walk(node.superClass, onUse, onView);
-			walk(node.body, onUse, onView);
+			if (node.superClass) walk(node.superClass, cb);
+			walk(node.body, cb);
 			return;
 
 		case 'MethodDefinition':
 		case 'PropertyDefinition':
-			if (node.computed) walk(node.key, onUse, onView);
-			walk(node.value, onUse, onView);
+			if (node.computed) walk(node.key, cb);
+			walk(node.value, cb);
 			return;
 
 		case 'MemberExpression':
 		case 'StaticMemberExpression':
-			walk(node.object, onUse, onView);
-			if (node.computed) walk(node.property, onUse, onView);
+			walk(node.object, cb);
+			if (node.computed) walk(node.property, cb);
 			return;
 
 		case 'Property':
 		case 'ObjectProperty':
-			if (node.computed) walk(node.key, onUse, onView);
-			walk(node.value, onUse, onView);
+			if (node.computed) walk(node.key, cb);
+			walk(node.value, cb);
 			return;
 
 		case 'ImportDeclaration':
@@ -157,20 +188,61 @@ function walk(node: unknown, onUse: (id: Node) => void, onView: () => void): voi
 
 		case 'CallExpression': {
 			const callee = node.callee;
-			if (isNode(callee) && callee.type === 'Identifier' && (callee as Node).name === 'view') {
-				onView();
+			if (isNode(callee) && callee.type === 'Identifier') {
+				const calleeName = (callee as Node).name as string;
+				if (calleeName === 'view') cb.onView();
+				if (calleeName === 'display') cb.onDisplay();
 			}
-			walk(node.callee, onUse, onView);
-			walk(node.arguments, onUse, onView);
+			walk(node.callee, cb);
+			walk(node.arguments, cb);
 			return;
 		}
 
 		default:
 			for (const key of Object.keys(node)) {
 				if (key === 'type' || key === 'start' || key === 'end') continue;
-				walk((node as Record<string, unknown>)[key], onUse, onView);
+				walk((node as Record<string, unknown>)[key], cb);
 			}
 	}
+}
+
+/** Recognize the one `view()` shape codegen supports: a single top-level
+ *  statement `const NAME = view(ARG);` (spec §4's own example). Anything
+ *  else that calls `view()` is a `hasViewCall` without a `viewBinding` —
+ *  codegen rejects it explicitly rather than mis-emitting. */
+function detectViewBinding(cell: Cell, body: Node[]): ViewBinding | undefined {
+	if (body.length !== 1) return undefined;
+	const stmt = body[0]!;
+	if (stmt.type !== 'VariableDeclaration') return undefined;
+	const declarations = stmt.declarations as unknown[];
+	if (declarations.length !== 1) return undefined;
+	const decl = declarations[0] as Node;
+	if (!isNode(decl.id) || (decl.id as Node).type !== 'Identifier') return undefined;
+	const init = decl.init;
+	if (!isNode(init) || init.type !== 'CallExpression') return undefined;
+	const callee = init.callee;
+	if (!isNode(callee) || callee.type !== 'Identifier' || callee.name !== 'view') return undefined;
+	const args = init.arguments as unknown[];
+	if (args.length !== 1) return undefined;
+	const arg = args[0] as Node;
+
+	return { name: (decl.id as Node).name as string, argCode: cell.code.slice(arg.start, arg.end) };
+}
+
+/** Recognize "single expression, one name": one top-level `const/let NAME =
+ *  EXPR;` statement, whatever EXPR is (including `view(...)` itself). */
+function detectSingleExprInit(cell: Cell, body: Node[]): { name: string; exprCode: string } | undefined {
+	if (body.length !== 1) return undefined;
+	const stmt = body[0]!;
+	if (stmt.type !== 'VariableDeclaration') return undefined;
+	const declarations = stmt.declarations as unknown[];
+	if (declarations.length !== 1) return undefined;
+	const decl = declarations[0] as Node;
+	if (!isNode(decl.id) || (decl.id as Node).type !== 'Identifier') return undefined;
+	if (!isNode(decl.init)) return undefined;
+	const init = decl.init as Node;
+
+	return { name: (decl.id as Node).name as string, exprCode: cell.code.slice(init.start, init.end) };
 }
 
 function collectBindings(node: unknown, bind: (id: Node) => void): void {
@@ -250,17 +322,32 @@ export function analyzeCell(cell: Cell, file: string): CellAnalysis {
 
 	const freeRefs: NameRef[] = [];
 	let hasViewCall = false;
-	walk(
-		program.body,
-		(id) => {
+	let hasDisplayCall = false;
+	walk(program.body, {
+		onUse: (id) => {
 			const name = id.name as string;
 			if (boundNames.has(name) || KNOWN_GLOBALS.has(name)) return;
 			freeRefs.push({ name, loc: toLoc(id.start) });
 		},
-		() => {
+		onView: () => {
 			hasViewCall = true;
+		},
+		onDisplay: () => {
+			hasDisplayCall = true;
 		}
-	);
+	});
+
+	const body = program.body as unknown as Node[];
+	const importNodes = body.filter((s) => s.type === 'ImportDeclaration');
+	const nonImportBody = body.filter((s) => s.type !== 'ImportDeclaration');
+
+	const importCode = importNodes.map((n) => cell.code.slice(n.start, n.end)).join('\n');
+	const bodyCode = nonImportBody.length
+		? cell.code.slice(nonImportBody[0]!.start, nonImportBody[nonImportBody.length - 1]!.end)
+		: '';
+
+	const viewBinding = hasViewCall ? detectViewBinding(cell, nonImportBody) : undefined;
+	const singleExprInit = detectSingleExprInit(cell, nonImportBody);
 
 	return {
 		cellId: cell.id,
@@ -268,7 +355,12 @@ export function analyzeCell(cell: Cell, file: string): CellAnalysis {
 		boundNames,
 		freeRefs,
 		hasViewCall,
-		statementCount: (program.body as unknown[]).length
+		viewBinding,
+		hasDisplayCall,
+		importCode,
+		bodyCode,
+		singleExprInit,
+		statementCount: nonImportBody.length
 	};
 }
 
@@ -290,15 +382,15 @@ export function analyzeExpression(
 	collectBindings(program.body, (id) => boundNames.add(id.name as string));
 
 	const freeRefs: NameRef[] = [];
-	walk(
-		program.body,
-		(id) => {
+	walk(program.body, {
+		onUse: (id) => {
 			const name = id.name as string;
 			if (boundNames.has(name) || KNOWN_GLOBALS.has(name)) return;
 			freeRefs.push({ name, loc: toLoc(id.start) });
 		},
-		() => {}
-	);
+		onView: () => {},
+		onDisplay: () => {}
+	});
 
 	return { freeRefs };
 }

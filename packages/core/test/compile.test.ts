@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parse } from 'svelte/compiler';
+import { compile as svelteCompile, parse } from 'svelte/compiler';
 import { describe, expect, it } from 'vitest';
 
 import { compile, VisdownCompileError } from '../src/index.js';
@@ -68,6 +68,39 @@ describe('compile — fixture 1 (static, spec §6)', () => {
 		expect(code).not.toContain('$derived');
 		expect(code).not.toContain('$state');
 	});
+
+	it('compiles as valid runes-mode Svelte', () => {
+		const source = readFileSync(join(here, 'fixtures/sales.md'), 'utf8');
+		const { code } = compile(source, 'sales.md');
+		expect(() => svelteCompile(code, { filename: 'Sales.svelte', runes: true })).not.toThrow();
+	});
+});
+
+describe('compile — fixture 2 (reactive path, spec §6)', () => {
+	const source = readFileSync(join(here, 'fixtures/threshold.md'), 'utf8');
+
+	it('compiles as valid runes-mode Svelte', () => {
+		const { code } = compile(source, 'threshold.md');
+		expect(() => svelteCompile(code, { filename: 'Threshold.svelte', runes: true })).not.toThrow();
+	});
+
+	it('threshold is a $state root bound to the view() element', () => {
+		const { code } = compile(source, 'threshold.md');
+		expect(code).toContain('const threshold__el = Inputs.range([0, 100]);');
+		expect(code).toContain('let threshold = $state(threshold__el.value);');
+		expect(code).toContain("import { mountView } from '@visdown/core/runtime';");
+		expect(code).toContain('use:mountView={{ el: threshold__el, set: (v) => (threshold = v) }}');
+	});
+
+	it('doubled is $derived — transitively reactive via threshold, not view() itself', () => {
+		const { code } = compile(source, 'threshold.md');
+		expect(code).toContain('const doubled = $derived(threshold * 2);');
+	});
+
+	it('the ${threshold} interpolation is a live template reference', () => {
+		const { code } = compile(source, 'threshold.md');
+		expect(code).toContain('{threshold}');
+	});
 });
 
 describe('compile — spec §5 error cases', () => {
@@ -115,5 +148,23 @@ describe('compile — spec §5 error cases', () => {
 		const source = ['```sql', 'select 1;', '```'].join('\n');
 		expect(() => compile(source, 'sql.md')).toThrow(VisdownCompileError);
 		expect(() => compile(source, 'sql.md')).toThrow(/Language 'sql' is not supported in v1/);
+	});
+
+	it('rejects display() — codegen for it is not implemented yet', () => {
+		const source = ['```js', 'display(1);', '```'].join('\n');
+		expect(() => compile(source, 'display.md')).toThrow(VisdownCompileError);
+		expect(() => compile(source, 'display.md')).toThrow(/display\(\) is not implemented/);
+	});
+
+	it('rejects a view() call outside the one recognized `const NAME = view(EXPR);` shape', () => {
+		const source = [
+			'```js',
+			'import * as Inputs from "@observablehq/inputs";',
+			'let threshold;',
+			'threshold = view(Inputs.range());',
+			'```'
+		].join('\n');
+		expect(() => compile(source, 'view-shape.md')).toThrow(VisdownCompileError);
+		expect(() => compile(source, 'view-shape.md')).toThrow(/Unsupported view\(\) usage/);
 	});
 });

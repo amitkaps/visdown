@@ -51,7 +51,11 @@ export class RemarkMarkdownParser implements MarkdownParser {
 			}
 
 			if (node.type === 'code' && node.lang === 'js') {
-				cells.push(this.toCell(node, cells.length));
+				const cell = this.toCell(node, cells.length);
+				cells.push(cell);
+				// A placeholder at the cell's position — codegen decides whether it
+				// renders anything (a view() cell's mount point; nothing otherwise).
+				template.push({ type: 'cellSlot', cellId: cell.id, loc: this.locOf(node) });
 				continue;
 			}
 
