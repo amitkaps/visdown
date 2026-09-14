@@ -1,13 +1,26 @@
 # Visdown
 
-Make visualisation using markdown
+Markdown in, Svelte 5 out. Reactive cells, Observable-style, compiled statically.
 
-Demo -> [http://visdown.com/](http://visdown.com/)
+The full spec lives in [`visdown.md`](visdown.md). This is the v2 rewrite, in
+progress on the `next.visdown.com` branch — the previous marked/vega-lite-based
+editor (still live at [visdown.com](http://visdown.com/)) lives on `master`.
 
-Allows you to write *json specification* in simple *yaml* and uses **marked** and **vega-lite** (or vega) to convert those specific code blocks in to svg.
+## Layout
 
-- yaml -> json (using [yaml.js](https://github.com/jeremyfa/yaml.js))
-- json -> vega-lite -> svg (using [vegalite.js](https://vega.github.io/vega-lite/))
-- markdown -> html (using [marked.js](https://github.com/marked)
+```
+packages/
+  core/    the compiler — parse → analyze → DAG → codegen (packages/core/src)
+  site/    docs/demo site for next.visdown.com (SvelteKit + Cloudflare)
+```
 
+See `packages/site/src/content/status.md` for what's implemented so far.
 
+## Commands
+
+```sh
+pnpm install
+pnpm test    # unit tests, both packages
+pnpm check   # typecheck + lint + format, both packages
+pnpm build   # build both packages
+```
