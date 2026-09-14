@@ -13,7 +13,6 @@ down to plain, static JS.
 
 The full spec — pipeline, contracts, the reactivity model, and the error
 cases a compiler build has to get right — lives in
-[`visdown.md`](https://github.com/amitkaps/visdown/blob/next.visdown.com/visdown.md)
-at the root of the repo.
+[`docs/spec.md`](https://github.com/amitkaps/visdown/blob/next.visdown.com/docs/spec.md).
 
 See [Status](/status) for what's implemented so far.
