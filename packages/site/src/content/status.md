@@ -18,22 +18,27 @@ not generated from the code.
   cells hoist directly; multi-statement single-name cells wrap in an IIFE.
   Template serialization with brace escaping and `<svelte:head>` from
   frontmatter.
-- Codegen for the **reactive** path, minus `display()`: `view()` compiles to
-  an element binding + `$state`, with a runtime `mountView` action (in
-  `packages/core/src/runtime`) mounting the element into its cell's slot and
-  wiring its `input` event back. Cells depending on a reactive one compile to
-  `$derived`/`$derived.by`, including the multiple-names object-destructure
-  shape. Only the recognized `const NAME = view(EXPR);` call shape is
-  supported — anything else calling `view()` is rejected explicitly.
+- Codegen for the **reactive** path: `view()` compiles to an element binding
+  + `$state`, with a runtime `mountView` action (in `packages/core/src/runtime`)
+  mounting the element into its cell's slot and wiring its `input` event back.
+  Cells depending on a reactive one compile to `$derived`/`$derived.by`,
+  including the multiple-names object-destructure shape. Only the recognized
+  `const NAME = view(EXPR);` call shape is supported — anything else calling
+  `view()` is rejected explicitly.
+- Codegen for **`display()`**: a side-effect-only cell (no declared name) gets
+  its own slot div, cleared at the start of each evaluation. A cell with no
+  reactive dependency mounts its `display()` calls once via a `mountDisplay`
+  action; a cell depending on a reactive name re-runs inside `$effect`, via
+  `bindDisplay`. `display()` combined with a declared name in the same cell,
+  or called outside a js cell (e.g. inside a `${}` expression), is rejected
+  explicitly.
 - Benchmark fixtures 1 and 2 (§6) — static and reactive paths — passing as
-  AST-normalized/structural tests, and both verified to compile with the real
-  Svelte compiler in runes mode, not just parse.
+  AST-normalized/structural tests, plus a `display()` fixture, and all
+  verified to compile with the real Svelte compiler in runes mode, not just
+  parse.
 
 ## Pending
 
-- `display()` codegen — the per-cell slot-clearing `$effect` path (§4). Cells
-  calling `display()` are rejected explicitly for now rather than mis-emitted.
-- The runtime shim for `display()` itself (`view()`'s `mountView` is done).
 - `packages/cli` — `visdown build <file>.md` → `<file>.html` (§7, the actual
   v1 deliverable).
 - Sourcemap emission from generated `.svelte` back to the `.md` source (§5).

@@ -77,8 +77,9 @@ export interface CellAnalysis {
 	 *  one `const/let NAME = EXPR;` statement. `exprCode` is EXPR's source,
 	 *  for codegen to drop into `$derived(EXPR)` or reuse verbatim. */
 	singleExprInit?: { name: string; exprCode: string };
-	/** Whether the cell calls `display(...)` anywhere — codegen for this is
-	 *  not implemented yet (spec §4's slot/`$effect` path). */
+	/** Whether the cell calls `display(...)` anywhere (spec §4's slot/`$effect`
+	 *  path). Only the "side effects only, no declared name" shape is
+	 *  implemented — `display()` combined with a declared name is rejected. */
 	hasDisplayCall: boolean;
 	/** Source of the cell's top-level `import` statements, if any — these
 	 *  always hoist verbatim ahead of whatever codegen shape the rest of the
@@ -389,7 +390,9 @@ export function analyzeExpression(
 			freeRefs.push({ name, loc: toLoc(id.start) });
 		},
 		onView: () => {},
-		onDisplay: () => {}
+		onDisplay: () => {
+			throw new VisdownCompileError('display() may only be called inside a js cell', file, loc);
+		}
 	});
 
 	return { freeRefs };

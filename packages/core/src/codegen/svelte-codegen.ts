@@ -6,8 +6,8 @@ import type { Cell, ParsedDocument, TemplateNode } from '../types.js';
 const VOID_TAGS = new Set(['hr', 'br', 'img']);
 
 /** Spec §4's codegen table: static rows verbatim/hoisted, `view()` → `$state`
- *  + a mounted slot, everything else reactive → `$derived`/`$derived.by`.
- *  `display()` (the slot-clearing `$effect` row) is not implemented yet. */
+ *  + a mounted slot, `display()` → its own cleared-per-evaluation slot, and
+ *  everything else reactive → `$derived`/`$derived.by`. */
 export function generateSvelte(
 	doc: ParsedDocument,
 	cells: Cell[],
@@ -17,14 +17,33 @@ export function generateSvelte(
 ): string {
 	const scriptLines: string[] = [];
 	const slotMarkup = new Map<string, string>();
-	let needsMountViewImport = false;
+	const runtimeImports = new Set<string>();
 
 	for (const cellId of dag.order) {
 		const cell = cells.find((c) => c.id === cellId)!;
 		const analysis = analyses.get(cellId)!;
 
 		if (analysis.hasDisplayCall) {
-			throw new VisdownCompileError('display() is not implemented in this build', file, cell.loc);
+			if (analysis.declared.length > 0) {
+				throw new VisdownCompileError(
+					'Unsupported display() usage — combining display() with a declared name is not implemented in this build',
+					file,
+					cell.loc
+				);
+			}
+			const slotVar = `${safeCellVar(cellId)}__slot`;
+			if (dag.reactive.has(cellId)) {
+				runtimeImports.add('bindDisplay');
+				const decl = `let ${slotVar};\n$effect(() => {\n${indent(`const display = bindDisplay(${slotVar});`)}\n${indent(analysis.bodyCode.trim())}\n});`;
+				scriptLines.push(withImports(analysis, decl));
+				slotMarkup.set(cellId, `<div bind:this={${slotVar}}></div>`);
+			} else {
+				runtimeImports.add('mountDisplay');
+				if (analysis.importCode) scriptLines.push(analysis.importCode);
+				const callback = `(display) => {\n${indent(analysis.bodyCode.trim())}\n}`;
+				slotMarkup.set(cellId, `<div use:mountDisplay={${callback}}></div>`);
+			}
+			continue;
 		}
 
 		if (analysis.viewBinding) {
@@ -35,7 +54,7 @@ export function generateSvelte(
 				cellId,
 				`<div use:mountView={{ el: ${name}__el, set: (v) => (${name} = v) }}></div>`
 			);
-			needsMountViewImport = true;
+			runtimeImports.add('mountView');
 			continue;
 		}
 
@@ -53,8 +72,9 @@ export function generateSvelte(
 		);
 	}
 
-	if (needsMountViewImport) {
-		scriptLines.unshift(`import { mountView } from '@visdown/core/runtime';`);
+	if (runtimeImports.size > 0) {
+		const names = [...runtimeImports].sort().join(', ');
+		scriptLines.unshift(`import { ${names} } from '@visdown/core/runtime';`);
 	}
 
 	const script = scriptLines.length > 0 ? `<script>\n${indent(scriptLines.join('\n\n'))}\n</script>\n\n` : '';
@@ -62,6 +82,11 @@ export function generateSvelte(
 	const markup = doc.template.map((node) => serialize(node, file, slotMarkup)).join('');
 
 	return `${script}${head}${markup}`;
+}
+
+/** `cell-0` → `cell_0`: cell ids aren't valid JS identifiers verbatim. */
+function safeCellVar(cellId: string): string {
+	return cellId.replace(/[^a-zA-Z0-9_$]/g, '_');
 }
 
 /** `import`s can't live inside a wrapping function — prefix them ahead of a
@@ -85,8 +110,8 @@ function emitStaticCell(cell: Cell, analysis: CellAnalysis): string {
 function emitReactiveCell(analysis: CellAnalysis): string {
 	const names = analysis.declared.map((d) => d.name);
 
-	// Side effects only, no declared name: not `display()` (rejected above),
-	// but still worth running as an effect rather than a static one-shot.
+	// Side effects only, no declared name, no display() call (that shape is
+	// handled separately above) — still worth running as an effect.
 	if (names.length === 0) {
 		return withImports(analysis, `$effect(() => {\n${indent(analysis.bodyCode.trim())}\n});`);
 	}

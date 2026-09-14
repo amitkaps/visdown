@@ -5,6 +5,12 @@ just what a user of either would notice. See `git log` for the full history.
 
 ## Unreleased
 
+- Added `display()` codegen: a side-effect-only cell gets its own slot div,
+  cleared at the start of each evaluation. A cell with no reactive dependency
+  mounts its `display()` calls once via a `mountDisplay` action; a cell
+  depending on a reactive name re-runs inside `$effect` via `bindDisplay`.
+  `display()` combined with a declared name, or called outside a js cell, is
+  rejected explicitly. Spec §4's codegen table is now fully implemented.
 - Added reactive codegen: `view()` compiles to an element binding + `$state`,
   cells depending on one compile to `$derived`/`$derived.by`, with a runtime
   `mountView` action wiring the view element into its slot. Spec §6 benchmark

@@ -103,6 +103,38 @@ describe('compile — fixture 2 (reactive path, spec §6)', () => {
 	});
 });
 
+describe('compile — display() (spec §4)', () => {
+	const source = readFileSync(join(here, 'fixtures/display.md'), 'utf8');
+
+	it('compiles as valid runes-mode Svelte', () => {
+		const { code } = compile(source, 'display.md');
+		expect(() => svelteCompile(code, { filename: 'Display.svelte', runes: true })).not.toThrow();
+	});
+
+	it('a display() cell referencing a reactive name gets a bind:this slot inside $effect', () => {
+		const { code } = compile(source, 'display.md');
+		expect(code).toContain("import { bindDisplay, mountDisplay, mountView } from '@visdown/core/runtime';");
+		expect(code).toContain('let cell_1__slot;');
+		expect(code).toContain('const display = bindDisplay(cell_1__slot);');
+		expect(code).toContain('display(`Selected: ${threshold}`);');
+		expect(code).toContain('<div bind:this={cell_1__slot}></div>');
+	});
+
+	it('a display()-only cell with no reactive dependency mounts inline via an action', () => {
+		const { code } = compile(source, 'display.md');
+		expect(code).toContain('<div use:mountDisplay={(display) => {');
+		expect(code).toContain('display("Static caption");');
+	});
+
+	it('the slot is cleared at the start of each evaluation, not per display() call', () => {
+		const { code } = compile(source, 'display.md');
+		// bindDisplay clears once per invocation — codegen calls it exactly
+		// once per reactive cell body, however many display() calls it makes.
+		const effectBlock = code.slice(code.indexOf('$effect'), code.indexOf('});', code.indexOf('$effect')));
+		expect(effectBlock.match(/bindDisplay\(/g)).toHaveLength(1);
+	});
+});
+
 describe('compile — spec §5 error cases', () => {
 	it('rejects a duplicate top-level declaration across cells', () => {
 		const source = [
@@ -150,10 +182,18 @@ describe('compile — spec §5 error cases', () => {
 		expect(() => compile(source, 'sql.md')).toThrow(/Language 'sql' is not supported in v1/);
 	});
 
-	it('rejects display() — codegen for it is not implemented yet', () => {
-		const source = ['```js', 'display(1);', '```'].join('\n');
-		expect(() => compile(source, 'display.md')).toThrow(VisdownCompileError);
-		expect(() => compile(source, 'display.md')).toThrow(/display\(\) is not implemented/);
+	it('rejects display() combined with a declared name in the same cell', () => {
+		const source = ['```js', 'const total = 1;', 'display(total);', '```'].join('\n');
+		expect(() => compile(source, 'display-combo.md')).toThrow(VisdownCompileError);
+		expect(() => compile(source, 'display-combo.md')).toThrow(/Unsupported display\(\) usage/);
+	});
+
+	it('rejects display() called inside a `${}` expression, outside any cell', () => {
+		const source = ['```js', 'const total = 1;', '```', '', 'Value: ${display(total)}'].join('\n');
+		expect(() => compile(source, 'display-outside.md')).toThrow(VisdownCompileError);
+		expect(() => compile(source, 'display-outside.md')).toThrow(
+			/display\(\) may only be called inside a js cell/
+		);
 	});
 
 	it('rejects a view() call outside the one recognized `const NAME = view(EXPR);` shape', () => {
