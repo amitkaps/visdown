@@ -1,0 +1,16 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "visdown",
+	"compatibility_date": "2026-09-09",
+	"compatibility_flags": ["nodejs_als"],
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	"workers_dev": true,
+	"preview_urls": true,
+	// Custom domain — needs the `amitkaps.com` zone on this Cloudflare account.
+	// Not deployed yet; this just points the eventual build at the right route.
+	"routes": [{ "pattern": "next.visdown.com", "custom_domain": true }]
+}

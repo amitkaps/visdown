@@ -1,0 +1,65 @@
+/* Plain CSS design tokens — no framework. */
+:root {
+	--bg: #ffffff;
+	--surface: #ffffff;
+	--surface-hover: #f4f4f5;
+	--border: #e4e4e7;
+	--text: #18181b;
+	--text-muted: #52525b;
+	--accent: #4f46e5;
+	--accent-text: #ffffff;
+	--radius: 0.5rem;
+	--shadow: 0 10px 30px -12px rgb(0 0 0 / 0.25);
+
+	--font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+	--font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+	color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #0a0a0a;
+		--surface: #141416;
+		--surface-hover: #1f1f23;
+		--border: #27272a;
+		--text: #fafafa;
+		--text-muted: #a1a1aa;
+		--accent: #818cf8;
+		--accent-text: #0a0a0a;
+		--shadow: 0 10px 30px -12px rgb(0 0 0 / 0.6);
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	font-family: var(--font-sans);
+	line-height: 1.6;
+	color: var(--text);
+	background: var(--bg);
+}
+
+body {
+	margin: 0;
+}
+
+a {
+	color: var(--accent);
+}
+
+code {
+	font-family: var(--font-mono);
+	font-size: 0.9em;
+}
+
+pre {
+	overflow-x: auto;
+	padding: 1rem;
+	border-radius: var(--radius);
+	background: var(--surface-hover);
+}

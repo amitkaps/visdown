@@ -1,0 +1,34 @@
+{
+	"name": "site",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"imports": {
+		"#lib": "./src/lib/index.js",
+		"#lib/*": "./src/lib/*"
+	},
+	"scripts": {
+		"dev": "vp dev",
+		"build": "vp build",
+		"check": "svelte-kit sync && wrangler types && vp check && svelte-check --tsconfig ./tsconfig.json",
+		"test": "vp test --run",
+		"deploy": "vp build && wrangler deploy",
+		"prepare": "svelte-kit sync && wrangler types"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-cloudflare": "^8.0.0-next.6",
+		"@sveltejs/kit": "^3.0.0-next.0",
+		"marked": "^18.0.13",
+		"svelte": "^5.57.0",
+		"svelte-check": "^4.6.0",
+		"typescript": "^6.0.3",
+		"vite": "npm:@voidzero-dev/vite-plus-core@0.3.1",
+		"vite-plus": "0.3.1",
+		"wrangler": "^4.131.1",
+		"yaml": "^2.9.1",
+		"zod": "^4.6.5"
+	},
+	"engines": {
+		"node": ">=24"
+	}
+}
