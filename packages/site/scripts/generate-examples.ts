@@ -22,8 +22,12 @@ export function generateExamples(root: string): void {
 		if (!file.endsWith('.md')) continue;
 		const slug = basename(file, '.md');
 		const source = readFileSync(join(examplesDir, file), 'utf8');
-		const { code } = compile(source, file);
+		const { code, map } = compile(source, file);
+		// No `sourceMappingURL` comment: outside a `<script>` block, `//` isn't
+		// a comment in Svelte's template syntax — it would render as literal
+		// text. The .map sits alongside for tooling/inspection instead.
 		writeFileSync(join(generatedDir, `${slug}.svelte`), code);
+		writeFileSync(join(generatedDir, `${slug}.svelte.map`), JSON.stringify(map));
 	}
 }
 

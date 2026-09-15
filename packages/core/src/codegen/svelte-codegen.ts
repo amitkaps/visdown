@@ -1,13 +1,18 @@
 import { VisdownCompileError } from '../errors.js';
+import { mark, markVerbatim, trimWithLoc } from '../sourcemap.js';
 import type { CellAnalysis } from '../analyzer/analyze.js';
 import type { DagResult } from '../dag/build-dag.js';
-import type { Cell, ParsedDocument, TemplateNode } from '../types.js';
+import type { Cell, ParsedDocument, SourceLocation, TemplateNode } from '../types.js';
 
 const VOID_TAGS = new Set(['hr', 'br', 'img']);
 
 /** Spec §4's codegen table: static rows verbatim/hoisted, `view()` → `$state`
  *  + a mounted slot, `display()` → its own cleared-per-evaluation slot, and
- *  everything else reactive → `$derived`/`$derived.by`. */
+ *  everything else reactive → `$derived`/`$derived.by`.
+ *
+ *  Returns the generated Svelte source with `mark()`/`markVerbatim()`
+ *  sourcemap markers still embedded — callers must run it through
+ *  `finalizeOutput` (spec §5) before treating it as real Svelte source. */
 export function generateSvelte(
 	doc: ParsedDocument,
 	cells: Cell[],
@@ -34,25 +39,25 @@ export function generateSvelte(
 			const slotVar = `${safeCellVar(cellId)}__slot`;
 			if (dag.reactive.has(cellId)) {
 				runtimeImports.add('bindDisplay');
-				const decl = `let ${slotVar};\n$effect(() => {\n${indent(`const display = bindDisplay(${slotVar});`)}\n${indent(analysis.bodyCode.trim())}\n});`;
+				const decl = `let ${slotVar};\n$effect(() => {\n${indent(`const display = bindDisplay(${slotVar});`)}\n${indent(markedBody(analysis))}\n});`;
 				scriptLines.push(withImports(analysis, decl));
-				slotMarkup.set(cellId, `<div bind:this={${slotVar}}></div>`);
+				slotMarkup.set(cellId, `${mark(cell.loc)}<div bind:this={${slotVar}}></div>`);
 			} else {
 				runtimeImports.add('mountDisplay');
-				if (analysis.importCode) scriptLines.push(analysis.importCode);
-				const callback = `(display) => {\n${indent(analysis.bodyCode.trim())}\n}`;
-				slotMarkup.set(cellId, `<div use:mountDisplay={${callback}}></div>`);
+				if (analysis.importCode) scriptLines.push(markVerbatim(analysis.importCode, analysis.importLoc!));
+				const callback = `(display) => {\n${indent(markedBody(analysis))}\n}`;
+				slotMarkup.set(cellId, `${mark(cell.loc)}<div use:mountDisplay={${callback}}></div>`);
 			}
 			continue;
 		}
 
 		if (analysis.viewBinding) {
-			const { name, argCode } = analysis.viewBinding;
-			const decl = `const ${name}__el = ${argCode};\nlet ${name} = $state(${name}__el.value);`;
+			const { name, argCode, argLoc } = analysis.viewBinding;
+			const decl = `const ${name}__el = ${markVerbatim(argCode, argLoc)};\nlet ${name} = $state(${name}__el.value);`;
 			scriptLines.push(withImports(analysis, decl));
 			slotMarkup.set(
 				cellId,
-				`<div use:mountView={{ el: ${name}__el, set: (v) => (${name} = v) }}></div>`
+				`${mark(cell.loc)}<div use:mountView={{ el: ${name}__el, set: (v) => (${name} = v) }}></div>`
 			);
 			runtimeImports.add('mountView');
 			continue;
@@ -92,7 +97,14 @@ function safeCellVar(cellId: string): string {
 /** `import`s can't live inside a wrapping function — prefix them ahead of a
  *  wrapped/rebuilt statement instead of leaving them in `analysis.bodyCode`. */
 function withImports(analysis: CellAnalysis, statement: string): string {
-	return analysis.importCode ? `${analysis.importCode}\n\n${statement}` : statement;
+	if (!analysis.importCode) return statement;
+	return `${markVerbatim(analysis.importCode, analysis.importLoc!)}\n\n${statement}`;
+}
+
+/** `analysis.bodyCode`, trimmed and marker-wrapped against its own source loc. */
+function markedBody(analysis: CellAnalysis): string {
+	const { text, loc } = trimWithLoc(analysis.bodyCode, analysis.bodyLoc ?? ({ line: 1, column: 0 } as SourceLocation));
+	return markVerbatim(text, loc);
 }
 
 function emitStaticCell(cell: Cell, analysis: CellAnalysis): string {
@@ -101,10 +113,11 @@ function emitStaticCell(cell: Cell, analysis: CellAnalysis): string {
 	// hoists verbatim; the source (imports included) is already the target shape.
 	if (analysis.declared.length === 1 && analysis.statementCount > 1) {
 		const name = analysis.declared[0]!.name;
-		const wrapped = `const ${name} = (() => {\n${indent(analysis.bodyCode.trim())}\n${indent(`return ${name};`)}\n})();`;
+		const wrapped = `const ${name} = (() => {\n${indent(markedBody(analysis))}\n${indent(`return ${name};`)}\n})();`;
 		return withImports(analysis, wrapped);
 	}
-	return cell.code.trim();
+	const { text, loc } = trimWithLoc(cell.code, cell.loc);
+	return markVerbatim(text, loc);
 }
 
 function emitReactiveCell(analysis: CellAnalysis): string {
@@ -113,21 +126,22 @@ function emitReactiveCell(analysis: CellAnalysis): string {
 	// Side effects only, no declared name, no display() call (that shape is
 	// handled separately above) — still worth running as an effect.
 	if (names.length === 0) {
-		return withImports(analysis, `$effect(() => {\n${indent(analysis.bodyCode.trim())}\n});`);
+		return withImports(analysis, `$effect(() => {\n${indent(markedBody(analysis))}\n});`);
 	}
 
 	if (names.length === 1 && analysis.statementCount === 1 && analysis.singleExprInit) {
-		return withImports(analysis, `const ${names[0]} = $derived(${analysis.singleExprInit.exprCode});`);
+		const expr = markVerbatim(analysis.singleExprInit.exprCode, analysis.singleExprInit.exprLoc);
+		return withImports(analysis, `const ${names[0]} = $derived(${expr});`);
 	}
 
 	if (names.length === 1) {
 		const name = names[0]!;
-		const wrapped = `const ${name} = $derived.by(() => {\n${indent(analysis.bodyCode.trim())}\n${indent(`return ${name};`)}\n});`;
+		const wrapped = `const ${name} = $derived.by(() => {\n${indent(markedBody(analysis))}\n${indent(`return ${name};`)}\n});`;
 		return withImports(analysis, wrapped);
 	}
 
 	const tuple = names.join(', ');
-	const wrapped = `const { ${tuple} } = $derived.by(() => {\n${indent(analysis.bodyCode.trim())}\n${indent(`return { ${tuple} };`)}\n});`;
+	const wrapped = `const { ${tuple} } = $derived.by(() => {\n${indent(markedBody(analysis))}\n${indent(`return { ${tuple} };`)}\n});`;
 	return withImports(analysis, wrapped);
 }
 
@@ -139,13 +153,13 @@ function emitHead(frontmatter: Record<string, unknown>): string {
 function serialize(node: TemplateNode, file: string, slotMarkup: Map<string, string>): string {
 	switch (node.type) {
 		case 'text':
-			return escapeText(node.value);
+			return escapeText(markVerbatim(node.value, node.loc));
 
 		case 'expression':
-			return `{${node.code}}`;
+			return `{${markVerbatim(node.code, node.loc)}}`;
 
 		case 'raw':
-			return node.html;
+			return mark(node.loc) + node.html;
 
 		case 'cellSlot': {
 			const markup = slotMarkup.get(node.cellId);
@@ -159,9 +173,10 @@ function serialize(node: TemplateNode, file: string, slotMarkup: Map<string, str
 			const attrs = node.attrs
 				.map((a) => (a.expression ? ` ${a.name}={${a.value}}` : ` ${a.name}="${escapeAttr(a.value)}"`))
 				.join('');
-			if (VOID_TAGS.has(node.tag)) return `<${node.tag}${attrs} />`;
+			const open = `${mark(node.loc)}<${node.tag}${attrs}`;
+			if (VOID_TAGS.has(node.tag)) return `${open} />`;
 			const children = node.children.map((child) => serialize(child, file, slotMarkup)).join('');
-			return `<${node.tag}${attrs}>${children}</${node.tag}>`;
+			return `${open}>${children}</${node.tag}>`;
 		}
 	}
 }

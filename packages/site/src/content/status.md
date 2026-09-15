@@ -40,11 +40,15 @@ not generated from the code.
   components at dev/build time (`scripts/generate-examples.ts`) and rendered
   in the browser, covering the static, `view()`/`$derived`, and `display()`
   paths together.
+- Sourcemap emission from generated `.svelte` back to the `.md` source (§5):
+  `compile()` returns `{ code, map }`, a v3 sourcemap so Svelte compiler
+  diagnostics and runtime stack traces point at real `.md` coordinates.
+- `packages/cli` (§7, the actual v1 deliverable) — `visdown build <file>.md`
+  → `<file>.html`: calls `svelte.compile()` directly and bundles the result
+  with `esbuild` into one flat HTML file, with an optional `--ssr` flag for
+  pre-rendered initial markup.
 
 ## Pending
 
-- `packages/cli` — `visdown build <file>.md` → `<file>.html` (§7, the actual
-  v1 deliverable).
-- Sourcemap emission from generated `.svelte` back to the `.md` source (§5).
 - `packages/vite` — deferred per spec §7 until there's a real multi-doc site
   that needs it.

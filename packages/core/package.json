@@ -19,6 +19,7 @@
 		"remark-frontmatter": "^5.0.0",
 		"remark-gfm": "^4.0.1",
 		"remark-parse": "^11.0.0",
+		"source-map-js": "^1.2.1",
 		"unified": "^11.0.5",
 		"yaml": "^2.9.1"
 	},

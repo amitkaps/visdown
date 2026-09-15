@@ -1,0 +1,27 @@
+{
+	"name": "@visdown/cli",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"bin": {
+		"visdown": "./dist/cli.js"
+	},
+	"scripts": {
+		"build": "node build.mjs",
+		"check": "tsc -p tsconfig.json --noEmit",
+		"test": "pnpm run build && vitest run",
+		"prepublishOnly": "pnpm run build"
+	},
+	"dependencies": {
+		"@visdown/core": "workspace:*",
+		"esbuild": "^0.28.2",
+		"oxc-parser": "^0.150.0",
+		"svelte": "^5.57.0",
+		"yaml": "^2.9.1"
+	},
+	"devDependencies": {
+		"@types/node": "^24.0.0",
+		"typescript": "^6.0.3",
+		"vitest": "^5.0.0"
+	}
+}

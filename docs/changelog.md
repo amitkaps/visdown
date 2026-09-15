@@ -5,6 +5,18 @@ just what a user of either would notice. See `git log` for the full history.
 
 ## Unreleased
 
+- Added `packages/cli` (spec §7): `visdown build <file>.md` → `<file>.html`,
+  a single flat file with no dev server or project scaffold. Calls
+  `svelte.compile()` directly and bundles the result — Svelte's client
+  runtime, `@visdown/core/runtime`, and the compiled component — with
+  `esbuild` into one inlined `<script type="module">`. `--ssr` pre-renders
+  initial markup via `svelte/server` and hydrates on the client instead of
+  mounting cold. This is the actual v1 deliverable per the spec.
+- Added sourcemaps (spec §5): `compile()` now returns `{ code, map }`, a v3
+  sourcemap from the generated `.svelte` back to the `.md` source, so Svelte
+  compiler diagnostics and runtime stack traces can point at real
+  coordinates. `packages/site`'s live examples now ship a `.svelte.map`
+  alongside each generated component.
 - Added live examples to `packages/site`: four `.md` documents under
   `src/examples/` (static, `view()`/`$derived`, `display()`, and all three
   combined) are compiled to real Svelte components by `@visdown/core` and

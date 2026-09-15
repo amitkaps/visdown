@@ -4,14 +4,18 @@ import { generateSvelte } from './codegen/svelte-codegen.js';
 import { buildDag } from './dag/build-dag.js';
 import { VisdownCompileError } from './errors.js';
 import { RemarkMarkdownParser } from './parser/remark-adapter.js';
+import { finalizeOutput } from './sourcemap.js';
 import type { TemplateNode } from './types.js';
 
 export * from './types.js';
 export { VisdownCompileError } from './errors.js';
 export { RemarkMarkdownParser } from './parser/remark-adapter.js';
+export type { RawSourceMap } from 'source-map-js';
 
 export interface CompileResult {
 	code: string;
+	/** v3 sourcemap from the generated `.svelte` back to `.md` (spec §5). */
+	map: import('source-map-js').RawSourceMap;
 }
 
 export function compile(source: string, file = 'source.md'): CompileResult {
@@ -31,7 +35,8 @@ export function compile(source: string, file = 'source.md'): CompileResult {
 	// undefined-reference message as cell-to-cell references.
 	validateExpressions(doc.template, analyses, file);
 
-	return { code: generateSvelte(doc, doc.cells, analyses, dag, file) };
+	const raw = generateSvelte(doc, doc.cells, analyses, dag, file);
+	return finalizeOutput(raw, file, source);
 }
 
 function validateExpressions(

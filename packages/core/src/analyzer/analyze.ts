@@ -56,6 +56,8 @@ export interface ViewBinding {
 	name: string;
 	/** Source text of `view(...)`'s single argument, verbatim. */
 	argCode: string;
+	/** Where `argCode` starts in the `.md` source (spec §5 sourcemaps). */
+	argLoc: SourceLocation;
 }
 
 export interface CellAnalysis {
@@ -76,7 +78,7 @@ export interface CellAnalysis {
 	/** "Single expression, one name" (spec §4's table): the cell is exactly
 	 *  one `const/let NAME = EXPR;` statement. `exprCode` is EXPR's source,
 	 *  for codegen to drop into `$derived(EXPR)` or reuse verbatim. */
-	singleExprInit?: { name: string; exprCode: string };
+	singleExprInit?: { name: string; exprCode: string; exprLoc: SourceLocation };
 	/** Whether the cell calls `display(...)` anywhere (spec §4's slot/`$effect`
 	 *  path). Only the "side effects only, no declared name" shape is
 	 *  implemented — `display()` combined with a declared name is rejected. */
@@ -85,10 +87,14 @@ export interface CellAnalysis {
 	 *  always hoist verbatim ahead of whatever codegen shape the rest of the
 	 *  cell takes, since an `import` can't live inside a wrapping function. */
 	importCode: string;
+	/** Where `importCode` starts in the `.md` source, when non-empty (spec §5 sourcemaps). */
+	importLoc?: SourceLocation;
 	/** Source of the cell's non-`import` statements (imports assumed to come
 	 *  first, per fixture convention — not re-validated). What `statementCount`
 	 *  counts, and what a `$derived.by`/IIFE wrap's body is built from. */
 	bodyCode: string;
+	/** Where `bodyCode` starts in the `.md` source, when non-empty (spec §5 sourcemaps). */
+	bodyLoc?: SourceLocation;
 	/** Non-import statement count, for the single/multi-statement codegen split. */
 	statementCount: number;
 }
@@ -227,12 +233,19 @@ function detectViewBinding(cell: Cell, body: Node[]): ViewBinding | undefined {
 	if (args.length !== 1) return undefined;
 	const arg = args[0] as Node;
 
-	return { name: (decl.id as Node).name as string, argCode: cell.code.slice(arg.start, arg.end) };
+	return {
+		name: (decl.id as Node).name as string,
+		argCode: cell.code.slice(arg.start, arg.end),
+		argLoc: offsetToLoc(cell.code, arg.start, cell.loc)
+	};
 }
 
 /** Recognize "single expression, one name": one top-level `const/let NAME =
  *  EXPR;` statement, whatever EXPR is (including `view(...)` itself). */
-function detectSingleExprInit(cell: Cell, body: Node[]): { name: string; exprCode: string } | undefined {
+function detectSingleExprInit(
+	cell: Cell,
+	body: Node[]
+): { name: string; exprCode: string; exprLoc: SourceLocation } | undefined {
 	if (body.length !== 1) return undefined;
 	const stmt = body[0]!;
 	if (stmt.type !== 'VariableDeclaration') return undefined;
@@ -243,7 +256,11 @@ function detectSingleExprInit(cell: Cell, body: Node[]): { name: string; exprCod
 	if (!isNode(decl.init)) return undefined;
 	const init = decl.init as Node;
 
-	return { name: (decl.id as Node).name as string, exprCode: cell.code.slice(init.start, init.end) };
+	return {
+		name: (decl.id as Node).name as string,
+		exprCode: cell.code.slice(init.start, init.end),
+		exprLoc: offsetToLoc(cell.code, init.start, cell.loc)
+	};
 }
 
 function collectBindings(node: unknown, bind: (id: Node) => void): void {
@@ -343,9 +360,11 @@ export function analyzeCell(cell: Cell, file: string): CellAnalysis {
 	const nonImportBody = body.filter((s) => s.type !== 'ImportDeclaration');
 
 	const importCode = importNodes.map((n) => cell.code.slice(n.start, n.end)).join('\n');
+	const importLoc = importNodes.length ? toLoc(importNodes[0]!.start) : undefined;
 	const bodyCode = nonImportBody.length
 		? cell.code.slice(nonImportBody[0]!.start, nonImportBody[nonImportBody.length - 1]!.end)
 		: '';
+	const bodyLoc = nonImportBody.length ? toLoc(nonImportBody[0]!.start) : undefined;
 
 	const viewBinding = hasViewCall ? detectViewBinding(cell, nonImportBody) : undefined;
 	const singleExprInit = detectSingleExprInit(cell, nonImportBody);
@@ -359,7 +378,9 @@ export function analyzeCell(cell: Cell, file: string): CellAnalysis {
 		viewBinding,
 		hasDisplayCall,
 		importCode,
+		importLoc,
 		bodyCode,
+		bodyLoc,
 		singleExprInit,
 		statementCount: nonImportBody.length
 	};

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { SourceMapConsumer } from 'source-map-js';
 import { compile as svelteCompile, parse } from 'svelte/compiler';
 import { describe, expect, it } from 'vitest';
 
@@ -132,6 +133,46 @@ describe('compile — display() (spec §4)', () => {
 		// once per reactive cell body, however many display() calls it makes.
 		const effectBlock = code.slice(code.indexOf('$effect'), code.indexOf('});', code.indexOf('$effect')));
 		expect(effectBlock.match(/bindDisplay\(/g)).toHaveLength(1);
+	});
+});
+
+describe('compile — sourcemaps (spec §5)', () => {
+	it('emits a v3 sourcemap with the .md as sourcesContent', () => {
+		const source = readFileSync(join(here, 'fixtures/threshold.md'), 'utf8');
+		const { map } = compile(source, 'threshold.md');
+		expect(map.version).toBe(3);
+		expect(map.sources).toEqual(['threshold.md']);
+		expect(map.sourcesContent).toEqual([source]);
+	});
+
+	it('maps a $derived expression in generated code back to its real .md coordinates', () => {
+		const source = readFileSync(join(here, 'fixtures/threshold.md'), 'utf8');
+		const { code, map } = compile(source, 'threshold.md');
+
+		const lines = code.split('\n');
+		const genLineIndex = lines.findIndex((l) => l.includes('threshold * 2'));
+		const genColumn = lines[genLineIndex]!.indexOf('threshold * 2');
+
+		const consumer = new SourceMapConsumer(map);
+		const original = consumer.originalPositionFor({ line: genLineIndex + 1, column: genColumn });
+
+		const sourceLines = source.split('\n');
+		expect(sourceLines[original.line! - 1]!.slice(original.column!)).toContain('threshold * 2');
+	});
+
+	it('maps the template expression {total} back to its ${total} source position', () => {
+		const source = readFileSync(join(here, 'fixtures/sales.md'), 'utf8');
+		const { code, map } = compile(source, 'sales.md');
+
+		const lines = code.split('\n');
+		const genLineIndex = lines.findIndex((l) => l.includes('{total}'));
+		const genColumn = lines[genLineIndex]!.indexOf('{total}') + 1;
+
+		const consumer = new SourceMapConsumer(map);
+		const original = consumer.originalPositionFor({ line: genLineIndex + 1, column: genColumn });
+
+		const sourceLines = source.split('\n');
+		expect(sourceLines[original.line! - 1]!.slice(original.column!, original.column! + 5)).toBe('total');
 	});
 });
 
